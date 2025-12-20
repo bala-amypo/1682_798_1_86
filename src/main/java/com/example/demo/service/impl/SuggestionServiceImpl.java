@@ -5,33 +5,29 @@ import com.example.demo.entity.Farm;
 import com.example.demo.entity.Fertilizer;
 import com.example.demo.entity.Suggestion;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.FarmRepository;
 import com.example.demo.repository.SuggestionRepository;
 import com.example.demo.service.CatalogService;
-import com.example.demo.service.FarmService;
 import com.example.demo.service.SuggestionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SuggestionServiceImpl implements SuggestionService {
 
-    private final FarmService farmService;
-    private final CatalogService catalogService;
+    private final FarmRepository farmRepository;
     private final SuggestionRepository suggestionRepository;
-
-    public SuggestionServiceImpl(FarmService farmService,
-                                 CatalogService catalogService,
-                                 SuggestionRepository suggestionRepository) {
-        this.farmService = farmService;
-        this.catalogService = catalogService;
-        this.suggestionRepository = suggestionRepository;
-    }
+    private final CatalogService catalogService;
 
     @Override
     public Suggestion generateSuggestion(Long farmId) {
-        Farm farm = farmService.getFarmById(farmId);
+
+        Farm farm = farmRepository.findById(farmId)
+                .orElseThrow(() -> new ResourceNotFoundException("Farm"));
 
         List<Crop> crops = catalogService.findSuitableCrops(
                 farm.getSoilPH(),
@@ -62,7 +58,7 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Override
     public Suggestion getSuggestion(Long suggestionId) {
         return suggestionRepository.findById(suggestionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Suggestion"));
     }
 
     @Override
