@@ -7,7 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FarmRequest {
-    private String email;
-    private int password;
-   
+    private String name;
+    private Double soilPH;
+    private Double waterLevel;
+    private String season;
 }
