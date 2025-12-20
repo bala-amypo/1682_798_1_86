@@ -1,12 +1,11 @@
 package com.example.demo.repository;
 
-import java.util.List;
-
+import com.example.demo.entity.Fertilizer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.entity.Fertilizer;
+import java.util.List;
 
-public interface FertilizerRepository extends JpaRepository<Fertilizer, Long>{
-    List<Fertilizer> findByRecommendedForCropscontainingIgnoreCase(String cropName);
-    
+public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> {
+
+    List<Fertilizer> findByRecommendedForCropsContaining(String cropName);
 }
