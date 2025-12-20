@@ -1,45 +1,33 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.SuggestionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/suggestions")
-@CrossOrigin
+@RequiredArgsConstructor
 public class SuggestionController {
 
-    @Autowired
-    private SuggestionServiceImpl suggestionService;
+    private final SuggestionService suggestionService;
 
-    // POST /suggestions/{farmId} – generate suggestion
     @PostMapping("/{farmId}")
-    public ResponseEntity<?> generateSuggestion(
-            @PathVariable Long farmId,
-            Authentication authentication) {
-
+    public ResponseEntity<?> generateSuggestion(@PathVariable Long farmId) {
         return ResponseEntity.ok(
-                suggestionService.generateSuggestion(farmId, authentication.getName())
+                suggestionService.generateSuggestion(farmId)
         );
     }
 
-    // GET /suggestions/{suggestionId}
     @GetMapping("/{suggestionId}")
-    public ResponseEntity<?> getSuggestion(
-            @PathVariable Long suggestionId) {
-
+    public ResponseEntity<?> getSuggestion(@PathVariable Long suggestionId) {
         return ResponseEntity.ok(
-                suggestionService.getSuggestionById(suggestionId)
+                suggestionService.getSuggestion(suggestionId)
         );
     }
 
-    // GET /suggestions/farm/{farmId}
     @GetMapping("/farm/{farmId}")
-    public ResponseEntity<?> listFarmSuggestions(
-            @PathVariable Long farmId) {
-
+    public ResponseEntity<?> getSuggestionsByFarm(@PathVariable Long farmId) {
         return ResponseEntity.ok(
                 suggestionService.getSuggestionsByFarm(farmId)
         );
