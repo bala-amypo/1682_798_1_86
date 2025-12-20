@@ -1,11 +1,8 @@
+// CropRequest.java
 package com.example.demo.dto;
-
 import lombok.*;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class CropRequest {
     private String name;
     private Double suitablePHMin;

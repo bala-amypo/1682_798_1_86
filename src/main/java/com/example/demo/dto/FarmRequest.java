@@ -1,11 +1,8 @@
+// FarmRequest.java
 package com.example.demo.dto;
-
 import lombok.*;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class FarmRequest {
     private String name;
     private Double soilPH;
