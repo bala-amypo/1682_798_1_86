@@ -143,7 +143,6 @@ import com.example.demo.dto.FertilizerRequest;
 import com.example.demo.entity.Crop;
 import com.example.demo.entity.Fertilizer;
 import com.example.demo.service.CatalogService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -151,54 +150,40 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/catalog")
-@RequiredArgsConstructor
 public class CatalogController {
 
     private final CatalogService catalogService;
 
-    // Add Crop
-    @PostMapping("/crop")
-    public ResponseEntity<?> addCrop(@RequestBody CropRequest req) {
+    public CatalogController(CatalogService catalogService) {
+        this.catalogService = catalogService;
+    }
 
-        Crop crop = Crop.builder()
-                .name(req.getName())
-                .suitablePHMin(req.getSuitablePHMin())
-                .suitablePHMax(req.getSuitablePHMax())
-                .requiredWater(req.getRequiredWater())
-                .season(req.getSeason())
-                .build();
+    @PostMapping("/crop")
+    public ResponseEntity<Crop> addCrop(@RequestBody CropRequest req) {
+
+        Crop crop = new Crop();
+        crop.setName(req.getName());
+        crop.setSuitablePHMin(req.getSuitablePHMin());
+        crop.setSuitablePHMax(req.getSuitablePHMax());
+        crop.setRequiredWater(req.getRequiredWater());
+        crop.setSeason(req.getSeason());
 
         return ResponseEntity.ok(catalogService.addCrop(crop));
     }
 
-    // Add Fertilizer
     @PostMapping("/fertilizer")
-    public ResponseEntity<?> addFertilizer(@RequestBody FertilizerRequest req) {
+    public ResponseEntity<Fertilizer> addFertilizer(@RequestBody FertilizerRequest req) {
 
-        Fertilizer fertilizer = Fertilizer.builder()
-                .name(req.getName())
-                .npkRatio(req.getNpkRatio())
-                .recommendedForCrops(req.getRecommendedForCrops())
-                .build();
+        Fertilizer fertilizer = new Fertilizer();
+        fertilizer.setName(req.getName());
+        fertilizer.setNpkRatio(req.getNpkRatio());
+        fertilizer.setRecommendedForCrops(req.getRecommendedForCrops());
 
         return ResponseEntity.ok(catalogService.addFertilizer(fertilizer));
     }
 
-    // Find suitable crops
-    @GetMapping("/crops/suitable")
-    public ResponseEntity<?> getSuitableCrops(
-            @RequestParam Double ph,
-            @RequestParam Double water,
-            @RequestParam String season) {
-
-        List<Crop> crops = catalogService.findSuitableCrops(ph, water, season);
-        return ResponseEntity.ok(crops);
-    }
-
-    // Find fertilizers by crop name
-    @GetMapping("/fertilizers/by-crop")
-    public ResponseEntity<?> getFertilizersByCrop(@RequestParam String name) {
-        List<Fertilizer> fertilizers = catalogService.findFertilizersForCrop(name);
-        return ResponseEntity.ok(fertilizers);
+    @GetMapping("/fertilizers")
+    public ResponseEntity<List<Fertilizer>> getAllFertilizers() {
+        return ResponseEntity.ok(catalogService.getAllFertilizers());
     }
 }

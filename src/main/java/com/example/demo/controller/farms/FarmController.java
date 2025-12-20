@@ -105,7 +105,6 @@ package com.example.demo.controller.farms;
 import com.example.demo.dto.FarmRequest;
 import com.example.demo.entity.Farm;
 import com.example.demo.service.FarmService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -113,38 +112,34 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/farms")
-@RequiredArgsConstructor
 public class FarmController {
 
     private final FarmService farmService;
 
-    // Create Farm
+    public FarmController(FarmService farmService) {
+        this.farmService = farmService;
+    }
+
     @PostMapping
-    public ResponseEntity<?> createFarm(@RequestBody FarmRequest req) {
+    public ResponseEntity<Farm> createFarm(@RequestBody FarmRequest req) {
 
-        Farm farm = Farm.builder()
-                .name(req.getName())
-                .soilPH(req.getSoilPH())
-                .waterLevel(req.getWaterLevel())
-                .season(req.getSeason())
-                .build();
+        Farm farm = new Farm();
+        farm.setName(req.getName());
+        farm.setSoilPH(req.getSoilPH());
+        farm.setWaterLevel(req.getWaterLevel());
+        farm.setSeason(req.getSeason());
 
-        Farm savedFarm = farmService.createFarm(farm);
-        return ResponseEntity.ok(savedFarm);
+        return ResponseEntity.ok(farmService.createFarm(farm));
     }
 
-    // List all farms
     @GetMapping
-    public ResponseEntity<?> listFarms() {
-        List<Farm> farms = farmService.getAllFarms();
-        return ResponseEntity.ok(farms);
+    public ResponseEntity<List<Farm>> getAllFarms() {
+        return ResponseEntity.ok(farmService.findAll());
     }
 
-    // Get farm by ID
-    @GetMapping("/{farmId}")
-    public ResponseEntity<?> getFarm(@PathVariable Long farmId) {
-        Farm farm = farmService.getFarmById(farmId);
-        return ResponseEntity.ok(farm);
+    @GetMapping("/{id}")
+    public ResponseEntity<Farm> getFarm(@PathVariable Long id) {
+        return ResponseEntity.ok(farmService.findById(id));
     }
 }
 
