@@ -134,12 +134,12 @@ public class FarmController {
 
     @GetMapping
     public ResponseEntity<List<Farm>> getAllFarms() {
-        return ResponseEntity.ok(farmService.findAll());
+        return ResponseEntity.ok(farmService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Farm> getFarm(@PathVariable Long id) {
-        return ResponseEntity.ok(farmService.findById(id));
+    public ResponseEntity<Farm> getFarmById(@PathVariable Long id) {
+        return ResponseEntity.ok(farmService.getById(id));
     }
 }
 

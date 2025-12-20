@@ -58,32 +58,33 @@
 //         return ResponseEntity.ok(response);
 //     }
 // }
-
 package com.example.demo.controller.auth;
 
-import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        User user = userService.register(request);
-        return ResponseEntity.ok(user);
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        return ResponseEntity.ok("Login successful (no JWT)");
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
+
+        User user = new User();
+        user.setName(req.getName());
+        user.setEmail(req.getEmail());
+        user.setPassword(req.getPassword());
+        user.setRole("USER");
+
+        return ResponseEntity.ok(userService.save(user));
     }
 }

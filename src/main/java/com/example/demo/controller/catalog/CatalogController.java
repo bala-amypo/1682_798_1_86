@@ -163,8 +163,8 @@ public class CatalogController {
 
         Crop crop = new Crop();
         crop.setName(req.getName());
-        crop.setSuitablePHMin(req.getSuitablePHMin());
-        crop.setSuitablePHMax(req.getSuitablePHMax());
+        crop.setPhMin(req.getSuitablePHMin());
+        crop.setPhMax(req.getSuitablePHMax());
         crop.setRequiredWater(req.getRequiredWater());
         crop.setSeason(req.getSeason());
 
