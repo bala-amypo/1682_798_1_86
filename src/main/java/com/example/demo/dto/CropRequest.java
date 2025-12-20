@@ -1,14 +1,19 @@
 package com.example.demo.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FarmRequest {
+public class CropRequest {
+
     private String name;
-    private Double soilPH;
-    private Double waterLevel;
+    private Double suitablePHMin;
+    private Double suitablePHMax;
+    private Double requiredWater;
     private String season;
 }

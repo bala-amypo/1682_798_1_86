@@ -1,13 +1,16 @@
 package com.example.demo.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FarmRequest {
+public class AuthRequest {
+
     private String email;
-    private int password;
-   
+    private String password;
 }
