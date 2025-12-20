@@ -1,44 +1,90 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.FarmRequest;
+import com.example.demo.entity.Farm;
+import com.example.demo.entity.User;
 import com.example.demo.service.FarmService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/farms")
-@CrossOrigin
 public class FarmController {
 
-    @Autowired
-    private FarmServiceImpl farmService;
+    private final FarmService farmService;
+    private final UserService userService;
 
-    // POST /farms – add farm
+    public FarmController(FarmService farmService, UserService userService) {
+        this.farmService = farmService;
+        this.userService = userService;
+    }
+
     @PostMapping
-    public ResponseEntity<?> createFarm(
-            @RequestBody FarmRequest request,
-            Authentication authentication) {
+    public ResponseEntity<?> createFarm(@RequestBody FarmRequest req, Authentication auth) {
+        User user = userService.findByEmail(auth.getName());
 
-        return ResponseEntity.ok(
-                farmService.createFarm(request, authentication.getName())
-        );
+        Farm farm = Farm.builder()
+                .name(req.getName())
+                .soilPH(req.getSoilPH())
+                .waterLevel(req.getWaterLevel())
+                .season(req.getSeason())
+                .owner(user)
+                .build();
+
+        return ResponseEntity.ok(farmService.createFarm(farm, user.getId()));
     }
 
-    // GET /farms – list farms of logged-in user
     @GetMapping
-    public ResponseEntity<?> listFarms(Authentication authentication) {
-        return ResponseEntity.ok(
-                farmService.getFarmsByUser(authentication.getName())
-        );
-    }
-
-    // GET /farms/{farmId} – get farm details
-    @GetMapping("/{farmId}")
-    public ResponseEntity<?> getFarm(@PathVariable Long farmId) {
-        return ResponseEntity.ok(
-                farmService.getFarmById(farmId)
-        );
+    public ResponseEntity<?> listFarms(Authentication auth) {
+        User user = userService.findByEmail(auth.getName());
+        return ResponseEntity.ok(farmService.getFarmsByOwner(user.getId()));
     }
 }
+
+
+// package com.example.demo.controller;
+
+// import com.example.demo.dto.FarmRequest;
+// import com.example.demo.service.FarmService;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.security.core.Authentication;
+// import org.springframework.web.bind.annotation.*;
+
+// @RestController
+// @RequestMapping("/farms")
+// @CrossOrigin
+// public class FarmController {
+
+//     @Autowired
+//     private FarmServiceImpl farmService;
+
+//     // POST /farms – add farm
+//     @PostMapping
+//     public ResponseEntity<?> createFarm(
+//             @RequestBody FarmRequest request,
+//             Authentication authentication) {
+
+//         return ResponseEntity.ok(
+//                 farmService.createFarm(request, authentication.getName())
+//         );
+//     }
+
+//     // GET /farms – list farms of logged-in user
+//     @GetMapping
+//     public ResponseEntity<?> listFarms(Authentication authentication) {
+//         return ResponseEntity.ok(
+//                 farmService.getFarmsByUser(authentication.getName())
+//         );
+//     }
+
+//     // GET /farms/{farmId} – get farm details
+//     @GetMapping("/{farmId}")
+//     public ResponseEntity<?> getFarm(@PathVariable Long farmId) {
+//         return ResponseEntity.ok(
+//                 farmService.getFarmById(farmId)
+//         );
+//     }
+// }
