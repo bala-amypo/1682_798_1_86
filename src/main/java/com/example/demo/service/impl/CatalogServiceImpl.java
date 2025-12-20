@@ -121,20 +121,18 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public List<Crop> findSuitableCrops(Double ph, Double water, String season) {
-        // Filter crops that match the soil pH, water level, and season
         return cropRepository.findAll()
                 .stream()
-                .filter(crop -> ph >= crop.getSuitablePHMin() &&
-                                ph <= crop.getSuitablePHMax() &&
-                                water >= crop.getWaterLevelMin() &&
-                                water <= crop.getWaterLevelMax() &&
-                                crop.getSuitableSeason().equalsIgnoreCase(season))
+                .filter(c -> ph >= c.getSuitablePHMin() &&
+                             ph <= c.getSuitablePHMax() &&
+                             water >= c.getWaterLevelMin() &&
+                             water <= c.getWaterLevelMax() &&
+                             c.getSuitableSeason().equalsIgnoreCase(season))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
-        // Filter fertilizers whose recommended crops match the given list
         return fertilizerRepository.findAll()
                 .stream()
                 .filter(f -> cropNames.stream()
