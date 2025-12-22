@@ -30,7 +30,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest req) {
-        // CRUD-only dummy login
         userService.findByEmail(req.getEmail());
         return ResponseEntity.ok("Login success");
     }
