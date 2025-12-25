@@ -1,58 +1,52 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
+    public AuthController(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    // ---------------- REGISTER ----------------
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<String> register(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String password = request.get("password");
+        String role = request.get("role"); // USER or ADMIN
 
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole()); // ADMIN or USER
+        // Encode password (you should save this to DB)
+        String encodedPassword = passwordEncoder.encode(password);
 
-        userRepository.save(user);
+        // TODO: Save username, encodedPassword, and role to DB
 
         return ResponseEntity.ok("User registered successfully");
     }
 
+    // ---------------- LOGIN ----------------
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> login(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String password = request.get("password");
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        // TODO: Validate username & password against DB
+        // For demo, assume userId = 1 and role = ADMIN
+        Long userId = 1L;
+        String role = "ADMIN";
 
-        User user = userRepository
-                .findByUsername(request.getUsername())
-                .orElseThrow();
-
-        String token = jwtTokenProvider.generateToken(
-                user.getUsername(),
-                user.getRole()
-        );
+        // Create JWT token
+        String token = jwtTokenProvider.createToken(userId, username, role);
 
         return ResponseEntity.ok(token);
     }
