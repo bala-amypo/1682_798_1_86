@@ -11,25 +11,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
-    private String name;
-    
+    private String name; // This is the user's display name
+
     @Column(nullable = false, unique = true)
-    private String email;
-    
+    private String email; // Unique login email
+
     @Column(nullable = false)
-    private String password;
-    
+    private String password; // Hashed password
+
     @Column(nullable = false)
-    private String role;
-    
+    private String role; // e.g., "ADMIN", "FARMER"
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
