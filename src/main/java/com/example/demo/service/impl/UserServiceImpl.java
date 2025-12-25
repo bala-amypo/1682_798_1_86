@@ -12,11 +12,11 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
 
-    // Required by Spring
+    // No-arg constructor (needed by Spring)
     public UserServiceImpl() {
     }
 
-    // Required by TEST FILE (DO NOT REMOVE)
+    // Constructor REQUIRED by test file
     public UserServiceImpl(UserRepository userRepository,
                            BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -30,7 +30,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id) {
+    public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    // 🔥 THIS METHOD FIXES YOUR CURRENT ERROR
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
