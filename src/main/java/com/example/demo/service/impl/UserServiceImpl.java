@@ -7,9 +7,8 @@ import com.example.demo.service.UserService;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public String getUserName() {
-        return "Default User";
+    public Object findById(Long id) {
+        // Dummy implementation for tests
+        return null;
     }
-
-    // Add other methods as required by your UserService interface
 }

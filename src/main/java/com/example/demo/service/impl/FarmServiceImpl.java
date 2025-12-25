@@ -2,14 +2,15 @@ package com.example.demo.service.impl;
 
 import org.springframework.stereotype.Service;
 import com.example.demo.service.FarmService;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class FarmServiceImpl implements FarmService {
 
     @Override
-    public String getFarmName() {
-        return "Default Farm";
+    public List<String> getFarmsByOwner(Long ownerId) {
+        // Dummy implementation for tests
+        return Collections.emptyList();
     }
-
-    // Add other methods as required by your FarmService interface
 }

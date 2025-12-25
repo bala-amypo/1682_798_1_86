@@ -7,9 +7,8 @@ import com.example.demo.service.SuggestionService;
 public class SuggestionServiceImpl implements SuggestionService {
 
     @Override
-    public String getSuggestion() {
+    public String getSuggestion(Long id) {
+        // Dummy implementation for tests
         return "Default Suggestion";
     }
-
-    // Add other methods as required by your SuggestionService interface
 }
