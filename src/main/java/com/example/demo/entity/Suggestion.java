@@ -1,14 +1,9 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Entity
-@Data
-@NoArgsConstructor
 public class Suggestion {
 
     @Id
@@ -20,7 +15,6 @@ public class Suggestion {
     private Farm farm;
 
     private String suggestedCrops;
-
     private String suggestedFertilizers;
 
     @Column(nullable = false, updatable = false)
@@ -29,5 +23,39 @@ public class Suggestion {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    // ===== getters & setters =====
+
+    public Long getId() {
+        return id;
+    }
+
+    public Farm getFarm() {
+        return farm;
+    }
+
+    public void setFarm(Farm farm) {
+        this.farm = farm;
+    }
+
+    public String getSuggestedCrops() {
+        return suggestedCrops;
+    }
+
+    public void setSuggestedCrops(String suggestedCrops) {
+        this.suggestedCrops = suggestedCrops;
+    }
+
+    public String getSuggestedFertilizers() {
+        return suggestedFertilizers;
+    }
+
+    public void setSuggestedFertilizers(String suggestedFertilizers) {
+        this.suggestedFertilizers = suggestedFertilizers;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }
