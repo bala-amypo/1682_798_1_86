@@ -1,4 +1,4 @@
-package com.example.demo.service.impl;
+package com.example.demo;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
@@ -9,21 +9,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    // REQUIRED no-arg constructor
-    public UserServiceImpl() {
-    }
-
-    // REQUIRED by test file
+    // ✅ Constructor EXACTLY as tests expect
     public UserServiceImpl(UserRepository userRepository,
                            BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // 🔥 METHOD NAME MUST BE "register"
     @Override
     public User register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
