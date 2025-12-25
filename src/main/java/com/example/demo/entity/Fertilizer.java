@@ -2,30 +2,62 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
-public class Fertilizer {
+@Table(name = "fertilizers")
+public class Fertilizer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String npkRatio;
 
-    @ManyToOne
-    @JoinColumn(name = "crop_id")
-    private Crop crop; // <-- Add this
+    private String npkRatio; // e.g., "10-10-10"
 
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    private String crop; // Name of the crop this fertilizer is for
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    // Default constructor
+    public Fertilizer() {}
 
-    public String getNpkRatio() { return npkRatio; }
-    public void setNpkRatio(String npkRatio) { this.npkRatio = npkRatio; }
+    // Constructor with fields
+    public Fertilizer(String name, String npkRatio, String crop) {
+        this.name = name;
+        this.npkRatio = npkRatio;
+        this.crop = crop;
+    }
 
-    public Crop getCrop() { return crop; }  // <-- Add this
-    public void setCrop(Crop crop) { this.crop = crop; } // <-- Add this
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNpkRatio() {
+        return npkRatio;
+    }
+
+    public void setNpkRatio(String npkRatio) {
+        this.npkRatio = npkRatio;
+    }
+
+    public String getCrop() {
+        return crop;
+    }
+
+    public void setCrop(String crop) {
+        this.crop = crop;
+    }
 }
