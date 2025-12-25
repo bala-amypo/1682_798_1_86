@@ -17,7 +17,9 @@ public class FarmController {
 
     private final FarmService farmService;
 
+    // -------------------------
     // Create a new farm
+    // -------------------------
     @PostMapping
     public FarmResponse createFarm(@RequestBody FarmRequest request) {
         Farm farm = new Farm();
@@ -30,23 +32,29 @@ public class FarmController {
         return mapToResponse(savedFarm);
     }
 
-    // Get a farm by its ID
+    // -------------------------
+    // Get a farm by ID
+    // -------------------------
     @GetMapping("/{id}")
     public FarmResponse getFarm(@PathVariable Long id) {
         Farm farm = farmService.getFarmById(id);
         return mapToResponse(farm);
     }
 
-    // Get all farms for a specific owner
+    // -------------------------
+    // Get all farms by owner
+    // -------------------------
     @GetMapping("/owner/{ownerId}")
     public List<FarmResponse> getFarmsByOwner(@PathVariable Long ownerId) {
-        return farmService.getFarmsByOwner(ownerId)
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        List<Farm> farms = farmService.getFarmsByOwner(ownerId);
+        return farms.stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
     }
 
-    // Helper method to convert Farm entity to DTO
+    // -------------------------
+    // Helper: Convert Farm entity to DTO
+    // -------------------------
     private FarmResponse mapToResponse(Farm farm) {
         FarmResponse response = new FarmResponse();
         response.setId(farm.getId());
@@ -55,7 +63,7 @@ public class FarmController {
         response.setWaterLevel(farm.getWaterLevel());
         response.setSeason(farm.getSeason());
         response.setOwnerId(farm.getOwner().getId());
-        response.setOwnerUsername(farm.getOwner().getUsername());
+        response.setOwnerUsername(farm.getOwner().getName()); // <-- uses 'name' field from User
         response.setCreatedAt(farm.getCreatedAt().toString());
         return response;
     }
