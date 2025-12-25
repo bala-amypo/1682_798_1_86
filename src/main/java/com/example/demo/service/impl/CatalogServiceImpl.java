@@ -15,8 +15,7 @@ public class CatalogServiceImpl implements CatalogService {
     private final CropRepository cropRepository;
     private final FertilizerRepository fertilizerRepository;
 
-    public CatalogServiceImpl(CropRepository cropRepository,
-                              FertilizerRepository fertilizerRepository) {
+    public CatalogServiceImpl(CropRepository cropRepository, FertilizerRepository fertilizerRepository) {
         this.cropRepository = cropRepository;
         this.fertilizerRepository = fertilizerRepository;
     }
@@ -32,16 +31,16 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public List<Crop> findSuitableCrops(Double soilPh, Double rainfall, String season) {
-        // Replace with your logic, this is just a placeholder
-        return cropRepository.findAll();
+    public List<Fertilizer> findFertilizersForCrops(List<Crop> crops) {
+        // Assuming Fertilizer has a crop reference or cropName
+        return crops.stream()
+                .flatMap(crop -> fertilizerRepository.findByCropName(crop.getName()).stream())
+                .toList();
     }
 
     @Override
-    public List<Fertilizer> findFertilizersForCrops(List<Crop> crops) {
-        // Example placeholder: collect fertilizers by crop names
-        return crops.stream()
-                .flatMap(crop -> fertilizerRepository.findByCropNameContaining(crop.getName()).stream())
-                .toList();
+    public Crop findCropByName(String name) {
+        return cropRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Crop not found: " + name));
     }
 }
