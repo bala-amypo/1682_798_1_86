@@ -32,9 +32,14 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public List<Fertilizer> findFertilizersForCrops(List<Crop> crops) {
-        // Assuming Fertilizer has a crop reference or cropName
-        return crops.stream()
-                .flatMap(crop -> fertilizerRepository.findByCropName(crop.getName()).stream())
+        // Convert Crop objects to crop names
+        List<String> cropNames = crops.stream()
+                                      .map(Crop::getName)
+                                      .toList();
+
+        // Filter fertilizers by crop names
+        return fertilizerRepository.findAll().stream()
+                .filter(f -> cropNames.contains(f.getCropName()))
                 .toList();
     }
 
