@@ -1,9 +1,20 @@
+package com.example.demo.controller;
+
+import com.example.demo.dto.SuggestionRequest;
+import com.example.demo.dto.SuggestionResponseDTO;
+import com.example.demo.service.SuggestionService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/suggestions")
-@RequiredArgsConstructor
 public class SuggestionController {
 
     private final SuggestionService suggestionService;
+
+    public SuggestionController(SuggestionService suggestionService) {
+        this.suggestionService = suggestionService;
+    }
 
     @PostMapping("/{farmId}")
     public ResponseEntity<SuggestionResponseDTO> generate(
