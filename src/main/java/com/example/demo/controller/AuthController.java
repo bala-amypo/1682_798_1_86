@@ -41,7 +41,7 @@ public class AuthController {
             "User registered successfully",
             1L, // userId
             registerRequest.getEmail(),
-            "USER"
+            "ADMIN"
         ));
     }
     
