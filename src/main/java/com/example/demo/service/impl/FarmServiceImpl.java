@@ -1,27 +1,28 @@
-package com.example.demo.service.impl;
+package com.example.demo;
 
 import com.example.demo.entity.Farm;
 import com.example.demo.service.FarmService;
-import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class FarmServiceImpl implements FarmService {
 
     @Override
     public Farm createFarm(Farm farm, Long ownerId) {
-        return new Farm(); // dummy
+        // Dummy implementation
+        return farm;
     }
 
     @Override
     public List<Farm> getFarmsByOwner(Long ownerId) {
-        return Collections.emptyList(); // dummy
+        // Dummy implementation
+        return new ArrayList<>();
     }
 
     @Override
     public Farm getFarmById(Long id) {
-        return new Farm(); // dummy
+        // Dummy implementation
+        return new Farm();
     }
 }
