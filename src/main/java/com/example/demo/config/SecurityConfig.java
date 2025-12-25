@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,31 +45,39 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(AbstractHttpConfigurer::disable)
+            // ❌ Disable CSRF (JWT based auth)
+            .csrf(csrf -> csrf.disable())
 
+            // ❌ No session (stateless)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
+            // 🔐 Authorization rules
             .authorizeHttpRequests(auth -> auth
-                // ✅ Allow Swagger & CORS preflight
+
+                // ✅ Allow CORS preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // ✅ Swagger
                 .requestMatchers(
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**"
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
                 ).permitAll()
 
-                // ✅ Public auth endpoints
+                // ✅ Auth APIs
                 .requestMatchers("/api/auth/**").permitAll()
 
-                // 🔒 Admin-only catalog APIs
-                .requestMatchers(
-                        "/api/catalog/crops",
-                        "/api/catalog/fertilizers"
-                ).hasRole("ADMIN")
+                // 🔒 ADMIN only — catalog WRITE
+                .requestMatchers(HttpMethod.POST, "/api/catalog/**")
+                .hasRole("ADMIN")
 
-                // 🔐 Everything else needs JWT
+                // ✅ Anyone can READ catalog
+                .requestMatchers(HttpMethod.GET, "/api/catalog/**")
+                .permitAll()
+
+                // 🔐 Everything else needs authentication
                 .anyRequest().authenticated()
             )
 
