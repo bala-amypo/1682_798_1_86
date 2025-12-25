@@ -46,7 +46,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public List<Crop> findSuitableCrops(Double ph, Double waterLevel, String season) {
-        // Call repository with custom query
+        // Call repository with custom query (adjust method in CropRepository)
         return cropRepository.findBySuitablePHMinLessThanEqualAndSuitablePHMaxGreaterThanEqualAndSeason(ph, ph, season);
     }
 
@@ -56,10 +56,16 @@ public class CatalogServiceImpl implements CatalogService {
             return List.of();
         }
 
-        // Use findAll and filter manually
+        // Filter fertilizers by Crop object name
         return fertilizerRepository.findAll().stream()
-                .filter(f -> cropNames.contains(f.getCropName()))
+                .filter(f -> f.getCrop() != null && cropNames.contains(f.getCrop().getName()))
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Crop findCropByName(String name) {
+        return cropRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Crop not found: " + name));
     }
 }
