@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.SuggestionRequest;
-import com.example.demo.dto.SuggestionResponseDTO;
+import com.example.demo.dto.SuggestionResponse;
 import com.example.demo.service.SuggestionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,19 +17,17 @@ public class SuggestionController {
     }
 
     @PostMapping("/{farmId}")
-    public ResponseEntity<SuggestionResponseDTO> generate(
+    public ResponseEntity<SuggestionResponse> generate(
             @PathVariable Long farmId,
             @RequestBody SuggestionRequest request) {
 
-        return ResponseEntity.ok(
-                suggestionService.generateSuggestion(farmId, request)
-        );
+        SuggestionResponse response = suggestionService.generateSuggestion(farmId, request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SuggestionResponseDTO> getSuggestion(@PathVariable Long id) {
-        return ResponseEntity.ok(
-                suggestionService.getSuggestion(id)
-        );
+    public ResponseEntity<SuggestionResponse> getSuggestion(@PathVariable Long id) {
+        SuggestionResponse response = suggestionService.getSuggestion(id);
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.SuggestionRequest;
-import com.example.demo.entity.Suggestion;
+import com.example.demo.dto.SuggestionResponse;
 
 public interface SuggestionService {
-    Suggestion generateSuggestion(Long farmId, SuggestionRequest request);
-    Suggestion getSuggestion(Long suggestionId);
+
+    SuggestionResponse generateSuggestion(Long farmId, SuggestionRequest request);
+
+    SuggestionResponse getSuggestion(Long id);
 }
