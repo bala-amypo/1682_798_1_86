@@ -2,15 +2,20 @@ package com.example.demo.service.impl;
 
 import org.springframework.stereotype.Service;
 import com.example.demo.service.CatalogService;
-import java.util.List;
+import com.example.demo.entity.Fertilizer;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
 
     @Override
-    public List<String> findFertilizersForCrops(List<String> crops) {
-        // Dummy implementation for tests
-        return Collections.emptyList();
+    public List<Fertilizer> findFertilizersForCrops(List<String> crops) {
+        return Collections.emptyList(); // dummy
+    }
+
+    @Override
+    public List<String> findSuitableCrops(Double latitude, Double longitude, String soilType) {
+        return Collections.emptyList(); // dummy
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import org.springframework.stereotype.Service;
 import com.example.demo.service.FarmService;
+import com.example.demo.entity.Farm;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,8 +10,12 @@ import java.util.List;
 public class FarmServiceImpl implements FarmService {
 
     @Override
-    public List<String> getFarmsByOwner(Long ownerId) {
-        // Dummy implementation for tests
-        return Collections.emptyList();
+    public List<Farm> getFarmsByOwner(Long ownerId) {
+        return Collections.emptyList(); // dummy
+    }
+
+    @Override
+    public Farm getFarmById(Long id) {
+        return new Farm(); // dummy
     }
 }
