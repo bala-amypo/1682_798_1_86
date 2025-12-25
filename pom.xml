@@ -88,6 +88,21 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+ <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.30</version> <!-- Use appropriate version -->
+        <scope>provided</scope>
+    </dependency>
+    
+    <!-- Add Springdoc OpenAPI dependency (for Swagger) -->
+    <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>2.3.0</version>
+    </dependency>
+
     </dependencies>
     
     <build>
