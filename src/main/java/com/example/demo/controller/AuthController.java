@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.security.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +26,17 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(
             @RequestBody(
-                description = "User registration details",
-                required = true,
-                content = @io.swagger.v3.oas.annotations.media.Content(
-                    schema = @Schema(
-                        example = "{ \"email\": \"sham@gmail.com\", \"username\": \"sham\", \"password\": \"sham16\" }"
+                    description = "User registration details",
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(
+                                    example = "{\n" +
+                                            "  \"email\": \"sham@gmail.com\",\n" +
+                                            "  \"username\": \"sham\",\n" +
+                                            "  \"password\": \"sham16\"\n" +
+                                            "}"
+                            )
                     )
-                )
             )
             @org.springframework.web.bind.annotation.RequestBody Map<String, String> request
     ) {
@@ -39,7 +44,9 @@ public class AuthController {
         String username = request.get("username");
         String password = request.get("password");
 
+        // Encode password (you should save this to DB)
         String encodedPassword = passwordEncoder.encode(password);
+
         // TODO: Save email, username, encodedPassword to DB
 
         return ResponseEntity.ok("User registered successfully");
@@ -49,23 +56,28 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody(
-                description = "User login details",
-                required = true,
-                content = @io.swagger.v3.oas.annotations.media.Content(
-                    schema = @Schema(
-                        example = "{ \"username\": \"sham\", \"password\": \"sham16\" }"
+                    description = "User login details",
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(
+                                    example = "{\n" +
+                                            "  \"username\": \"sham\",\n" +
+                                            "  \"password\": \"sham16\"\n" +
+                                            "}"
+                            )
                     )
-                )
             )
             @org.springframework.web.bind.annotation.RequestBody Map<String, String> request
     ) {
         String username = request.get("username");
         String password = request.get("password");
 
-        // TODO: Validate username & password from DB
+        // TODO: Validate username & password against DB
+        // For demo, assume userId = 1 and role = ADMIN
         Long userId = 1L;
         String role = "ADMIN";
 
+        // Create JWT token
         String token = jwtTokenProvider.createToken(userId, username, role);
 
         return ResponseEntity.ok(token);
