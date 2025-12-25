@@ -5,27 +5,26 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
     
-    @Value("${jwt.secret:mySecretKey}") // Use a strong secret in production
+    @Value("${jwt.secret:mySecretKey}")
     private String jwtSecret;
     
-    @Value("${jwt.expiration:86400000}") // 24 hours in milliseconds
+    @Value("${jwt.expiration:86400000}") // 24 hours
     private long jwtExpirationMs;
     
     private Key key;
     
-    @PostConstruct
+    // Using @PostConstruct from jakarta.annotation (not javax)
+    @jakarta.annotation.PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
     
-    // Method that matches your AuthController call
     public String createToken(Long userId, String username, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
@@ -40,17 +39,25 @@ public class JwtTokenProvider {
                 .compact();
     }
     
-    // Helper method if you need to parse the token
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
+                .getBody()
+                .getSubject();
     }
     
-    // Validate token
+    // Add this method for JwtAuthenticationFilter
+    public String getRoleFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
+    }
+    
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -58,5 +65,15 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+    
+    // Additional helper methods if needed
+    public Long getUserIdFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId", Long.class);
     }
 }
