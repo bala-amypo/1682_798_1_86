@@ -7,13 +7,15 @@ import java.util.List;
 
 public interface CatalogService {
 
-    // Existing method
-    List<Crop> findSuitableCrops(Double ph, Double waterLevel, String season);
-
-    // Add this to match your service implementation
-    List<Fertilizer> findFertilizersForCrops(List<String> cropNames);
-
+    // Add new crop
     Crop addCrop(Crop crop);
 
+    // Add new fertilizer
     Fertilizer addFertilizer(Fertilizer fertilizer);
+
+    // Find suitable crops (example for your logic)
+    List<Crop> findSuitableCrops(Double soilPh, Double rainfall, String season);
+
+    // Find fertilizers for given crops
+    List<Fertilizer> findFertilizersForCrops(List<Crop> crops);
 }
