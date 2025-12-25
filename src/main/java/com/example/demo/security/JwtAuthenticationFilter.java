@@ -32,9 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
                 String username = jwtTokenProvider.getUsernameFromToken(jwt);
                 String role = jwtTokenProvider.getRoleFromToken(jwt);
-                Long userId = jwtTokenProvider.getUserIdFromToken(jwt); // safe Long conversion
+                Long userId = jwtTokenProvider.getUserIdFromToken(jwt); // ✅ safe
 
-                // You can pass userId to services if needed
+                // Create authentication token
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 username,
