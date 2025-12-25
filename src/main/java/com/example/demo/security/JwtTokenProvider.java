@@ -1,6 +1,8 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,10 +14,14 @@ import java.util.Date;
 public class JwtTokenProvider {
     
     @Value("${app.jwt.secret}")
-    private String jwtSecret = "yourSecretKeyShouldBeLongAndSecureForProduction";
+    private String jwtSecret = "yourSecretKeyShouldBeLongAndSecureForProductionForSpringBoot3";
     
     @Value("${app.jwt.expiration}")
     private int jwtExpirationInMs = 86400000; // 24 hours
+    
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
     
     public String createToken(Long userId, String email, String role) {
         Date now = new Date();
@@ -27,18 +33,19 @@ public class JwtTokenProvider {
                 .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
     
     public Claims validateToken(String token) {
         try {
-            return Jwts.parser()
-                    .setSigningKey(jwtSecret)
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception ex) {
-            throw new RuntimeException("Invalid JWT token");
+            throw new RuntimeException("Invalid JWT token: " + ex.getMessage());
         }
     }
     
