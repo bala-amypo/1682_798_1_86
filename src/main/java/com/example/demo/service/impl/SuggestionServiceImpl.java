@@ -7,9 +7,9 @@ import com.example.demo.entity.Suggestion;
 import com.example.demo.repository.FarmRepository;
 import com.example.demo.repository.SuggestionRepository;
 import com.example.demo.service.SuggestionService;
+import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+@Service  // <- Make sure this annotation is present
 public class SuggestionServiceImpl implements SuggestionService {
 
     private final SuggestionRepository suggestionRepository;
@@ -22,43 +22,36 @@ public class SuggestionServiceImpl implements SuggestionService {
 
     @Override
     public SuggestionResponse generateSuggestion(Long farmId, SuggestionRequest request) {
-        Optional<Farm> optionalFarm = farmRepository.findById(farmId);
-        if (!optionalFarm.isPresent()) {
-            throw new RuntimeException("Farm not found with id: " + farmId);
-        }
-
-        Farm farm = optionalFarm.get();
+        Farm farm = farmRepository.findById(farmId).orElseThrow(() ->
+            new RuntimeException("Farm not found with id " + farmId));
 
         Suggestion suggestion = new Suggestion();
         suggestion.setFarm(farm);
         suggestion.setSuggestedCrops(request.getSuggestedCrops());
         suggestion.setSuggestedFertilizers(request.getSuggestedFertilizers());
 
-        Suggestion savedSuggestion = suggestionRepository.save(suggestion);
+        Suggestion saved = suggestionRepository.save(suggestion);
 
         return new SuggestionResponse(
-                savedSuggestion.getId(),
-                farm.getId(),
-                savedSuggestion.getSuggestedCrops(),
-                savedSuggestion.getSuggestedFertilizers(),
-                savedSuggestion.getCreatedAt()
+            saved.getId(),
+            saved.getFarm().getId(),
+            saved.getSuggestedCrops(),
+            saved.getSuggestedFertilizers(),
+            saved.getCreatedAt()
         );
     }
 
     @Override
     public SuggestionResponse getSuggestion(Long id) {
-        Optional<Suggestion> optionalSuggestion = suggestionRepository.findById(id);
-        if (!optionalSuggestion.isPresent()) {
-            throw new RuntimeException("Suggestion not found with id: " + id);
-        }
+        Suggestion suggestion = suggestionRepository.findById(id).orElseThrow(() ->
+            new RuntimeException("Suggestion not found with id " + id));
 
-        Suggestion suggestion = optionalSuggestion.get();
         return new SuggestionResponse(
-                suggestion.getId(),
-                suggestion.getFarm().getId(),
-                suggestion.getSuggestedCrops(),
-                suggestion.getSuggestedFertilizers(),
-                suggestion.getCreatedAt()
+            suggestion.getId(),
+            suggestion.getFarm().getId(),
+            suggestion.getSuggestedCrops(),
+            suggestion.getSuggestedFertilizers(),
+            suggestion.getCreatedAt()
         );
     }
 }
