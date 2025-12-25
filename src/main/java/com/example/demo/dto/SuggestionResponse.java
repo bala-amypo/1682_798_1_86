@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.time.LocalDateTime;
 
-public class SuggestionResponseDTO {
+public class SuggestionResponse {
 
     private Long id;
     private Long farmId;
@@ -11,7 +11,7 @@ public class SuggestionResponseDTO {
     private String suggestedFertilizers;
     private LocalDateTime createdAt;
 
-    public SuggestionResponseDTO(
+    public SuggestionResponse(
             Long id,
             Long farmId,
             String farmName,
