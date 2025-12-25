@@ -34,18 +34,22 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        User user = userService.findByEmail(request.getEmail());
-        
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        try {
+            User user = userService.findByEmail(request.getEmail());
+            
+            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                return ResponseEntity.status(401).body("Invalid credentials");
+            }
+            
+            String token = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
+            return ResponseEntity.ok(AuthResponse.builder()
+                    .token(token)
+                    .userId(user.getId())
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .build());
+        } catch (Exception e) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
-        
-        String token = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
-        return ResponseEntity.ok(AuthResponse.builder()
-                .token(token)
-                .userId(user.getId())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build());
     }
 }
