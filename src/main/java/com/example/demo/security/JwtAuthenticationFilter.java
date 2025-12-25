@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component // 🔥 THIS IS VERY IMPORTANT
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -28,6 +28,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * 🔥 VERY IMPORTANT
+     * Skip JWT filter for auth & swagger endpoints
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+
+        return uri.startsWith("/api/auth/")
+                || uri.startsWith("/swagger-ui")
+                || uri.startsWith("/v3/api-docs");
+    }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -37,33 +50,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-
-            String token = authHeader.substring(7);
-
-            if (jwtTokenProvider.validateToken(token)) {
-
-                String username = jwtTokenProvider.getUsernameFromToken(token);
-
-                UserDetails userDetails =
-                        userDetailsService.loadUserByUsername(username);
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
-            }
+        // If no Authorization header, just continue (DO NOT BLOCK)
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        String token = authHeader.substring(7);
+
+        // Validate token
+        if (jwtTokenProvider.validateToken(token)) {
+
+            String username = jwtTokenProvider.getUsernameFromToken(token);
+
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(username);
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+
+            SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
+        }
+
+        // Always continue filter chain
         filterChain.doFilter(request, response);
     }
 }
