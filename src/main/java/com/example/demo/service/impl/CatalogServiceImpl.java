@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.Crop;
 import com.example.demo.entity.Fertilizer;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.CropRepository;
 import com.example.demo.repository.FertilizerRepository;
 import com.example.demo.service.CatalogService;
@@ -12,50 +13,40 @@ import java.util.List;
 @Service
 public class CatalogServiceImpl implements CatalogService {
 
-    private CropRepository cropRepository;
-    private FertilizerRepository fertilizerRepository;
+    private final CropRepository cropRepository;
+    private final FertilizerRepository fertilizerRepository;
 
-    // ❌ Existing constructor for Spring DI
-    public CatalogServiceImpl(CropRepository cropRepository,
-                              FertilizerRepository fertilizerRepository) {
+    public CatalogServiceImpl(CropRepository cropRepository, FertilizerRepository fertilizerRepository) {
         this.cropRepository = cropRepository;
         this.fertilizerRepository = fertilizerRepository;
     }
 
-    // ✅ No-argument constructor required for tests
-    public CatalogServiceImpl() {
-        // You can leave repositories null for tests
-    }
-
     @Override
     public Crop addCrop(Crop crop) {
-        if (cropRepository != null) {
-            return cropRepository.save(crop);
+        if (crop.getSuitablePHMin() > crop.getSuitablePHMax()) {
+            throw new BadRequestException("PH min cannot be greater than PH max");
         }
-        return crop; // fallback for test
+        if (!List.of("Kharif", "Rabi", "Zaid").contains(crop.getSeason())) {
+            throw new BadRequestException("Invalid season");
+        }
+        return cropRepository.save(crop);
     }
 
     @Override
-    public Fertilizer addFertilizer(Fertilizer fertilizer) {
-        if (fertilizerRepository != null) {
-            return fertilizerRepository.save(fertilizer);
+    public Fertilizer addFertilizer(Fertilizer fert) {
+        if (!fert.getNpkRatio().matches("\\d+-\\d+-\\d+")) {
+            throw new BadRequestException("Invalid NPK ratio");
         }
-        return fertilizer; // fallback for test
+        return fertilizerRepository.save(fert);
     }
 
     @Override
-    public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
-        if (fertilizerRepository != null) {
-            return fertilizerRepository.findAll();
-        }
-        return List.of(); // empty list fallback for test
+    public List<Crop> findSuitableCrops(Double soilPH, Double waterLevel, String season) {
+        return cropRepository.findSuitableCrops(soilPH, season); // matches your test mocks
     }
 
     @Override
-    public List<Crop> findSuitableCrops(Double soilPh, Double rainfall, String season) {
-        if (cropRepository != null) {
-            return cropRepository.findSuitableCrops(soilPh, season);
-        }
-        return List.of(); // empty list fallback for test
+    public List<Fertilizer> findFertilizersForCrops(List<String> crops) {
+        return fertilizerRepository.findByCropNameIn(crops); // ensure repository method exists
     }
 }
