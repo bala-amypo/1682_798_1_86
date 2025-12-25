@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
 public class SuggestionRequest {
-
     private String suggestedCrops;
     private String suggestedFertilizers;
 
