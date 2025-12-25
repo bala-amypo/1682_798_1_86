@@ -56,8 +56,7 @@ public class CatalogServiceImpl implements CatalogService {
         }
 
         return fertilizerRepository.findAll().stream()
-                .filter(f -> f.getCrop() != null && cropNames.contains(f.getCrop().getName()))
-                .distinct()
+                .filter(f -> cropNames.contains(f.getCrop())) // getCrop() returns the crop name
                 .collect(Collectors.toList());
     }
 
