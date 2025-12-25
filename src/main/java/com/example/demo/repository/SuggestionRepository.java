@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface SuggestionRepository extends JpaRepository<Suggestion, Long> {
 
-    // Get the latest suggestion for a farm
-    Optional<Suggestion> findFirstByFarmIdOrderByCreatedAtDesc(Long farmId);
+    Optional<Suggestion> findTopByFarm_IdOrderByCreatedAtDesc(Long farmId);
 }
