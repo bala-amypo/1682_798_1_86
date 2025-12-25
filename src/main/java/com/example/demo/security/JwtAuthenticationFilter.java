@@ -1,43 +1,41 @@
 package com.example.demo.security;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import jakarta.servlet.FilterChain;  // Changed from javax.servlet
+import jakarta.servlet.ServletException;  // Changed from javax.servlet
+import jakarta.servlet.http.HttpServletRequest;  // Changed from javax.servlet.http
+import jakarta.servlet.http.HttpServletResponse;  // Changed from javax.servlet.http
 import java.io.IOException;
 
-@Component
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    
+
     private final JwtTokenProvider jwtTokenProvider;
-    
+
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @Override
-    protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
-        try {
-            String token = getTokenFromRequest(request);
-            if (token != null && jwtTokenProvider.validateToken(token) != null) {
-                // Token is valid, but we're not setting authentication for simplicity
-                // In a real app, you would create an Authentication object and set it in SecurityContext
-            }
-        } catch (Exception ex) {
-            logger.error("Could not validate JWT token", ex);
+    protected void doFilterInternal(HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   FilterChain filterChain)
+            throws ServletException, IOException {
+        
+        String token = resolveToken(request);
+        
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            // Get authentication from token
+            String username = jwtTokenProvider.getUsername(token);
+            // Create Authentication object and set it in SecurityContext
+            // ... (your authentication logic here)
         }
         
         filterChain.doFilter(request, response);
     }
-    
-    private String getTokenFromRequest(HttpServletRequest request) {
+
+    private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);

@@ -13,47 +13,57 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final SecretKey secretKey;
-    private final long validityInMilliseconds;
-
-    public JwtTokenProvider(
-            @Value("${app.jwt.secret}") String secret,
-            @Value("${app.jwt.expiration}") long validityInMilliseconds) {
-        
-        // Create SecretKey from the secret string
+    
+    public JwtTokenProvider(@Value("${app.jwt.secret}") String secret) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityInMilliseconds = validityInMilliseconds;
     }
-
-    public String createToken(String username) {
+    
+    // Method with 3 parameters (as AuthController expects)
+    public String createToken(Long userId, String username, String role) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
-
+        Date validity = new Date(now.getTime() + 86400000); // 24 hours
+        
         return Jwts.builder()
-                .subject(username)                    // Changed from setSubject()
-                .issuedAt(now)                        // Changed from setIssuedAt()
-                .expiration(validity)                 // Changed from setExpiration()
-                .signWith(secretKey)                  // Changed from signWith(SignatureAlgorithm, secret)
+                .subject(username)
+                .claim("userId", userId)
+                .claim("role", role)
+                .issuedAt(now)
+                .expiration(validity)
+                .signWith(secretKey)
                 .compact();
     }
-
-    public String getUsernameFromToken(String token) {
-        return parseClaims(token).getSubject();
+    
+    // Optional: Method with 1 parameter (if you need it)
+    public String createToken(String username) {
+        return createToken(null, username, null);
     }
-
+    
+    public String getUsername(String token) {
+        return getClaims(token).getSubject();
+    }
+    
+    public Long getUserId(String token) {
+        return getClaims(token).get("userId", Long.class);
+    }
+    
+    public String getRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+    
     public boolean validateToken(String token) {
         try {
-            parseClaims(token);
+            getClaims(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
-
-    private Claims parseClaims(String token) {
+    
+    private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(secretKey)                // Changed from setSigningKey()
+                .verifyWith(secretKey)
                 .build()
-                .parseSignedClaims(token)             // Changed from parseClaimsJws()
+                .parseSignedClaims(token)
                 .getPayload();
     }
 }
