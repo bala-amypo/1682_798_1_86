@@ -13,53 +13,52 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final SecretKey secretKey;
-    
-    public JwtTokenProvider(@Value("${app.jwt.secret}") String secret) {
+    private final long jwtExpirationMs = 86400000; // 24 hours
+
+    public JwtTokenProvider(@Value("${app.jwt.secret:MySuperSecretKeyForJWTTokenGeneration1234567890}") String secret) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
-    
-    // Method with 3 parameters (as AuthController expects)
-    public String createToken(Long userId, String username, String role) {
+
+    public String generateToken(String username) {
+        return generateToken(username, null, "USER");
+    }
+
+    public String generateToken(String username, Long userId, String role) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + 86400000); // 24 hours
-        
+        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+
         return Jwts.builder()
                 .subject(username)
                 .claim("userId", userId)
                 .claim("role", role)
                 .issuedAt(now)
-                .expiration(validity)
-                .signWith(secretKey)
+                .expiration(expiryDate)
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
-    
-    // Optional: Method with 1 parameter (if you need it)
-    public String createToken(String username) {
-        return createToken(null, username, null);
+
+    public String getUsernameFromToken(String token) {
+        return getClaimsFromToken(token).getSubject();
     }
-    
-    public String getUsername(String token) {
-        return getClaims(token).getSubject();
+
+    public Long getUserIdFromToken(String token) {
+        return getClaimsFromToken(token).get("userId", Long.class);
     }
-    
-    public Long getUserId(String token) {
-        return getClaims(token).get("userId", Long.class);
+
+    public String getRoleFromToken(String token) {
+        return getClaimsFromToken(token).get("role", String.class);
     }
-    
-    public String getRole(String token) {
-        return getClaims(token).get("role", String.class);
-    }
-    
+
     public boolean validateToken(String token) {
         try {
-            getClaims(token);
+            getClaimsFromToken(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
-    
-    private Claims getClaims(String token) {
+
+    private Claims getClaimsFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()

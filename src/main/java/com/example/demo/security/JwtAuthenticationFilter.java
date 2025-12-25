@@ -1,13 +1,16 @@
 package com.example.demo.security;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.FilterChain;  // Changed from javax.servlet
-import jakarta.servlet.ServletException;  // Changed from javax.servlet
-import jakarta.servlet.http.HttpServletRequest;  // Changed from javax.servlet.http
-import jakarta.servlet.http.HttpServletResponse;  // Changed from javax.servlet.http
 import java.io.IOException;
+import java.util.Collections;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -23,19 +26,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                    FilterChain filterChain)
             throws ServletException, IOException {
         
-        String token = resolveToken(request);
-        
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            // Get authentication from token
-            String username = jwtTokenProvider.getUsername(token);
-            // Create Authentication object and set it in SecurityContext
-            // ... (your authentication logic here)
+        try {
+            String jwt = getJwtFromRequest(request);
+            
+            if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
+                String username = jwtTokenProvider.getUsernameFromToken(jwt);
+                String role = jwtTokenProvider.getRoleFromToken(jwt);
+                
+                UsernamePasswordAuthenticationToken authentication = 
+                    new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                    );
+                
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception ex) {
+            logger.error("Could not set user authentication in security context", ex);
         }
         
         filterChain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest request) {
+    private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
