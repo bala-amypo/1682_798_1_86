@@ -31,9 +31,9 @@ public class AuthController {
                     content = @Content(
                             schema = @Schema(
                                     example = "{\n" +
-                                            "  \"email\": \"sham@gmail.com\",\n" +
-                                            "  \"username\": \"sham\",\n" +
-                                            "  \"password\": \"sham16\"\n" +
+                                            "  \"email\": \"string\",\n" +
+                                            "  \"username\": \"string\",\n" +
+                                            "  \"password\": \"string\"\n" +
                                             "}"
                             )
                     )
@@ -44,9 +44,7 @@ public class AuthController {
         String username = request.get("username");
         String password = request.get("password");
 
-        // Encode password (you should save this to DB)
         String encodedPassword = passwordEncoder.encode(password);
-
         // TODO: Save email, username, encodedPassword to DB
 
         return ResponseEntity.ok("User registered successfully");
@@ -61,8 +59,8 @@ public class AuthController {
                     content = @Content(
                             schema = @Schema(
                                     example = "{\n" +
-                                            "  \"username\": \"sham\",\n" +
-                                            "  \"password\": \"sham16\"\n" +
+                                            "  \"username\": \"string\",\n" +
+                                            "  \"password\": \"string\"\n" +
                                             "}"
                             )
                     )
@@ -72,12 +70,10 @@ public class AuthController {
         String username = request.get("username");
         String password = request.get("password");
 
-        // TODO: Validate username & password against DB
-        // For demo, assume userId = 1 and role = ADMIN
+        // TODO: Validate username & password from DB
         Long userId = 1L;
         String role = "ADMIN";
 
-        // Create JWT token
         String token = jwtTokenProvider.createToken(userId, username, role);
 
         return ResponseEntity.ok(token);
