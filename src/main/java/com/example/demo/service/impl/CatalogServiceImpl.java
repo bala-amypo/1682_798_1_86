@@ -9,6 +9,7 @@ import com.example.demo.service.CatalogService;
 import com.example.demo.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,11 @@ public class CatalogServiceImpl implements CatalogService {
             throw new BadRequestException("Invalid season. Must be Kharif, Rabi, or Zaid");
         }
         
+        // Check if crop already exists
+        if (cropRepository.findByName(crop.getName()).isPresent()) {
+            throw new BadRequestException("Crop with name '" + crop.getName() + "' already exists");
+        }
+        
         return cropRepository.save(crop);
     }
 
@@ -36,6 +42,11 @@ public class CatalogServiceImpl implements CatalogService {
         String[] npkParts = fertilizer.getNpkRatio().split("-");
         if (npkParts.length != 3) {
             throw new BadRequestException("NPK ratio must be in format N-P-K (e.g., 10-10-10)");
+        }
+        
+        // Check if fertilizer already exists
+        if (fertilizerRepository.findByName(fertilizer.getName()).isPresent()) {
+            throw new BadRequestException("Fertilizer with name '" + fertilizer.getName() + "' already exists");
         }
         
         return fertilizerRepository.save(fertilizer);
