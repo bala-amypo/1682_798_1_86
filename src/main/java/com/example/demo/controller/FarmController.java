@@ -4,31 +4,23 @@ import com.example.demo.dto.FarmRequest;
 import com.example.demo.entity.Farm;
 import com.example.demo.service.FarmService;
 import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/farms")
+@RequiredArgsConstructor
 public class FarmController {
-    
-    @Autowired
-    private FarmService farmService;
-    
-    @Autowired
-    private UserService userService;
-    
-    public FarmController(FarmService farmService, UserService userService) {
-        this.farmService = farmService;
-        this.userService = userService;
-    }
-    
+    private final FarmService farmService;
+    private final UserService userService;
+
     @PostMapping
-    public ResponseEntity<Farm> createFarm(@RequestBody FarmRequest request, Authentication auth) {
-        Long userId = (Long) auth.getPrincipal();
-        
+    public ResponseEntity<?> createFarm(@RequestBody FarmRequest request, Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
         Farm farm = Farm.builder()
                 .name(request.getName())
                 .soilPH(request.getSoilPH())
@@ -36,17 +28,17 @@ public class FarmController {
                 .season(request.getSeason())
                 .build();
         
-        Farm savedFarm = farmService.createFarm(farm, userId);
-        return ResponseEntity.ok(savedFarm);
+        Farm saved = farmService.createFarm(farm, userId);
+        return ResponseEntity.ok(saved);
     }
-    
+
     @GetMapping
-    public ResponseEntity<List<Farm>> listFarms(Authentication auth) {
-        Long userId = (Long) auth.getPrincipal();
+    public ResponseEntity<List<Farm>> listFarms(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
         List<Farm> farms = farmService.getFarmsByOwner(userId);
         return ResponseEntity.ok(farms);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<Farm> getFarm(@PathVariable Long id) {
         Farm farm = farmService.getFarmById(id);
