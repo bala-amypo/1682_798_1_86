@@ -43,7 +43,7 @@ public class SecurityConfig {
                 ).permitAll()
 
                 // Auth APIs (login/register)
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
 
                 // All other APIs need JWT
                 .anyRequest().authenticated()
