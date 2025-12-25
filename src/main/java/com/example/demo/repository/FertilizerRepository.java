@@ -9,4 +9,6 @@ import java.util.List;
 public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> {
     @Query("SELECT f FROM Fertilizer f WHERE LOWER(f.recommendedForCrops) LIKE LOWER(CONCAT('%', :cropName, '%'))")
     List<Fertilizer> findByCropName(@Param("cropName") String cropName);
+    
+    Optional<Fertilizer> findByName(String name);
 }

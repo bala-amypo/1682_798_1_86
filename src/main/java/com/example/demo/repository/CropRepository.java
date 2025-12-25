@@ -8,5 +8,8 @@ import java.util.List;
 
 public interface CropRepository extends JpaRepository<Crop, Long> {
     @Query("SELECT c FROM Crop c WHERE c.suitablePHMin <= :ph AND c.suitablePHMax >= :ph AND c.season = :season")
-    List<Crop> findSuitableCrops(@Param("ph") Double ph, @Param("season") String season);
+    List<Crop> findSuitableCrops(@Param("ph") double ph, @Param("season") String season);
+    
+    @Query("SELECT c FROM Crop c WHERE c.name = :name")
+    Optional<Crop> findByName(@Param("name") String name);
 }
