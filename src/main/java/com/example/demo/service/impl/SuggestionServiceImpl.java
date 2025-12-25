@@ -9,7 +9,6 @@ import com.example.demo.repository.SuggestionRepository;
 import com.example.demo.service.CatalogService;
 import com.example.demo.service.FarmService;
 import com.example.demo.service.SuggestionService;
-import com.example.demo.service.impl.SuggestionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
