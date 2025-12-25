@@ -9,4 +9,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/suggestions")
 @RequiredArgsConstructor
-public class SuggestionController
+public class SuggestionController {
+    private final SuggestionService suggestionService;
+    
+    @PostMapping("/{farmId}")
+    public ResponseEntity<Suggestion> generate(@PathVariable Long farmId) {
+        Suggestion suggestion = suggestionService.generateSuggestion(farmId);
+        return ResponseEntity.ok(suggestion);
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Suggestion> getSuggestion(@PathVariable Long id) {
+        Suggestion suggestion = suggestionService.getSuggestion(id);
+        return ResponseEntity.ok(suggestion);
+    }
+}
