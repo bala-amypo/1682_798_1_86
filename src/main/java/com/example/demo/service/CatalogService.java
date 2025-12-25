@@ -9,5 +9,5 @@ public interface CatalogService {
     Fertilizer addFertilizer(Fertilizer fertilizer);
     List<Crop> findSuitableCrops(Double ph, Double waterLevel, String season);
     List<Fertilizer> findFertilizersForCrops(List<String> cropNames);
-     List<String> findFertilizersForCrops(List<String> crops);
+    
 }

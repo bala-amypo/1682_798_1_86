@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import org.springframework.stereotype.Service;
 import com.example.demo.service.CatalogService;
 import com.example.demo.entity.Fertilizer;
+import com.example.demo.entity.Crop;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +16,17 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public List<String> findSuitableCrops(Double latitude, Double longitude, String soilType) {
+    public List<Crop> findSuitableCrops(Double latitude, Double longitude, String soilType) {
         return Collections.emptyList(); // dummy
+    }
+
+    @Override
+    public Fertilizer addFertilizer(Fertilizer fertilizer) {
+        return new Fertilizer(); // dummy
+    }
+
+    @Override
+    public Crop addCrop(Crop crop) {
+        return new Crop(); // dummy
     }
 }

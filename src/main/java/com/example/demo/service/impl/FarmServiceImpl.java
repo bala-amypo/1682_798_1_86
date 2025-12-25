@@ -18,4 +18,9 @@ public class FarmServiceImpl implements FarmService {
     public Farm getFarmById(Long id) {
         return new Farm(); // dummy
     }
+
+    @Override
+    public Farm createFarm(Farm farm, Long ownerId) {
+        return new Farm(); // dummy
+    }
 }
