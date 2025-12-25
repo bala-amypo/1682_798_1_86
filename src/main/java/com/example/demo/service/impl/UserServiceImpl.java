@@ -1,33 +1,36 @@
-package com.example.demo;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    // Constructor as expected by tests
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    // Required by Spring
+    public UserServiceImpl() {
+    }
+
+    // Required by TEST FILE (DO NOT REMOVE)
+    public UserServiceImpl(UserRepository userRepository,
+                           BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User findByEmail(String email) {
-        return new User();
+    public User registerUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     @Override
-    public User register(User user) {
-        return user;
-    }
-
-    @Override
-    public User findById(Long id) {
-        return new User();
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }
