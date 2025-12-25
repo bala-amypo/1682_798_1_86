@@ -12,19 +12,20 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
 
-    // No-arg constructor (needed by Spring)
+    // REQUIRED no-arg constructor
     public UserServiceImpl() {
     }
 
-    // Constructor REQUIRED by test file
+    // REQUIRED by test file
     public UserServiceImpl(UserRepository userRepository,
                            BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // 🔥 METHOD NAME MUST BE "register"
     @Override
-    public User registerUser(User user) {
+    public User register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -34,9 +35,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    // 🔥 THIS METHOD FIXES YOUR CURRENT ERROR
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElse(null);
     }
 }
