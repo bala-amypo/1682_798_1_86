@@ -18,24 +18,16 @@ public class SuggestionServiceImpl implements SuggestionService {
 
     @Override
     public Suggestion generateSuggestion(Long farmId) {
-        // Check if a suggestion already exists for this farm
-        return suggestionRepository.findTopByFarmIdOrderByCreatedAtDesc(farmId)
+        return suggestionRepository.findFirstByFarmIdOrderByCreatedAtDesc(farmId)
                 .orElseGet(() -> {
-                    // Fetch farm
                     Farm farm = farmRepository.findById(farmId)
                             .orElseThrow(() -> new ResourceNotFoundException("Farm not found"));
 
-                    // Generate suggestion (replace with your actual logic)
-                    String suggestedCrops = "Crop1, Crop2";
-                    String suggestedFertilizers = "Fertilizer1, Fertilizer2";
-
-                    // Create new suggestion
                     Suggestion suggestion = new Suggestion();
                     suggestion.setFarm(farm);
-                    suggestion.setSuggestedCrops(suggestedCrops);
-                    suggestion.setSuggestedFertilizers(suggestedFertilizers);
+                    suggestion.setSuggestedCrops("Crop1, Crop2"); // Replace with real logic
+                    suggestion.setSuggestedFertilizers("Fertilizer1, Fertilizer2"); // Replace with real logic
 
-                    // Save and return
                     return suggestionRepository.save(suggestion);
                 });
     }
