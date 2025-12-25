@@ -7,7 +7,7 @@ import com.example.demo.repository.CropRepository;
 import com.example.demo.repository.FertilizerRepository;
 import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,6 +23,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public Crop addCrop(Crop crop) {
+        // Validation
         if (crop.getSuitablePHMin() > crop.getSuitablePHMax()) {
             throw new BadRequestException("PH min cannot be greater than PH max");
         }
@@ -33,20 +34,25 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Fertilizer addFertilizer(Fertilizer fert) {
-        if (!fert.getNpkRatio().matches("\\d+-\\d+-\\d+")) {
-            throw new BadRequestException("Invalid NPK ratio");
+    public Fertilizer addFertilizer(Fertilizer fertilizer) {
+        // Validate NPK format
+        if (!fertilizer.getNpkRatio().matches("\\d+-\\d+-\\d+")) {
+            throw new BadRequestException("Invalid NPK ratio format");
         }
-        return fertilizerRepository.save(fert);
+        return fertilizerRepository.save(fertilizer);
     }
 
     @Override
     public List<Crop> findSuitableCrops(Double soilPH, Double waterLevel, String season) {
-        return cropRepository.findSuitableCrops(soilPH, season); // matches your test mocks
+        return cropRepository.findSuitableCrops(soilPH, season);
     }
 
     @Override
-    public List<Fertilizer> findFertilizersForCrops(List<String> crops) {
-        return fertilizerRepository.findByCropNameIn(crops); // ensure repository method exists
+    public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
+        List<Fertilizer> result = new ArrayList<>();
+        for (String crop : cropNames) {
+            result.addAll(fertilizerRepository.findByCropNameContaining(crop));
+        }
+        return result;
     }
 }

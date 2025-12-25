@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.Farm;
 import com.example.demo.entity.User;
-import com.example.demo.exception.IllegalArgumentException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.FarmRepository;
 import com.example.demo.repository.UserRepository;
@@ -10,6 +9,7 @@ import com.example.demo.service.FarmService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Service
 public class FarmServiceImpl implements FarmService {
