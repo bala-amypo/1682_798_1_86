@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
+import com.example.demo.service.*;
 
 import com.example.demo.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,8 +19,10 @@ public class AuthController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final UserService user;
 
-    public AuthController(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
+    public AuthController(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,UserService user) {
+    this.user=user;
         this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
     }
@@ -29,13 +32,9 @@ public class AuthController {
     public ResponseEntity<String> register(
             @RequestBody User us
     ) {
-        String email = request.get("email");
-        String username = request.get("username");
-        String password = request.get("password");
-
-        String encodedPassword = passwordEncoder.encode(password);
+        
         // TODO: Save email, username, encodedPassword to DB
-
+        user.register(us);
         return ResponseEntity.ok("User registered successfully");
     }
 
