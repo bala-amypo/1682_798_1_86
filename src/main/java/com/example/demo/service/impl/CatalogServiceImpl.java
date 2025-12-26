@@ -20,10 +20,12 @@ public class CatalogServiceImpl implements CatalogService {
         this.fertilizerRepository = fertilizerRepository;
     }
 
+    @Override
     public List<Crop> getAllCrops() {
         return cropRepository.findAll();
     }
 
+    @Override
     public List<Fertilizer> getFertilizersByCrop(String cropName) {
         return fertilizerRepository.findByCropName(cropName);
     }
