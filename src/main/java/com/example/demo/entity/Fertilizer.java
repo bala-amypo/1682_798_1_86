@@ -1,9 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Fertilizer {
@@ -16,9 +13,7 @@ public class Fertilizer {
 
     private String cropName; // Must match repository method
 
-    // Constructors
-    public Fertilizer() {
-    }
+    public Fertilizer() {}
 
     public Fertilizer(String name, String cropName) {
         this.name = name;
@@ -26,27 +21,12 @@ public class Fertilizer {
     }
 
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCropName() {
-        return cropName;
-    }
-
-    public void setCropName(String cropName) {
-        this.cropName = cropName;
-    }
+    public String getCropName() { return cropName; }
+    public void setCropName(String cropName) { this.cropName = cropName; }
 }

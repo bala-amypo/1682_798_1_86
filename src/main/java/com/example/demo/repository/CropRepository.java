@@ -8,8 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CropRepository extends JpaRepository<Crop, Long> {
-
-    // Method must match the field name 'soilType' exactly
     List<Crop> findBySoilType(String soilType);
-
 }
