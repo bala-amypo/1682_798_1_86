@@ -14,23 +14,17 @@ public class Farm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
     private String name;
-    
     private Double soilPH;
-    
     private Double waterLevel;
-    
     private String season;
-    
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
-    
+
     private LocalDateTime createdAt;
-    
+
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    protected void onCreate() { createdAt = LocalDateTime.now(); }
 }
