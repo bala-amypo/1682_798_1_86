@@ -31,9 +31,9 @@
 //     }
 // }
 
-
 package com.example.demo.security;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,6 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        // Allow auth APIs without token
         String path = request.getServletPath();
         if (path.startsWith("/api/auth")) {
             filterChain.doFilter(request, response);
@@ -81,9 +82,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             String token = authHeader.substring(7);
 
-            if (jwtTokenProvider.validateToken(token)) {
+            // ✅ validateToken RETURNS Claims (not boolean)
+            Claims claims = jwtTokenProvider.validateToken(token);
 
-                String email = jwtTokenProvider.getUsernameFromToken(token);
+            if (claims != null) {
+
+                // ✅ subject = email/username
+                String email = claims.getSubject();
 
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(email);
