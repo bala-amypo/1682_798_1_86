@@ -7,9 +7,6 @@ import java.util.List;
 
 public interface CatalogService {
 
-    Crop saveCrop(Crop crop);
-
-    // 🔹 ADD THESE METHODS
     List<Crop> findSuitableCrops(Double soilPH, Double waterAvailability, String season);
 
     List<Fertilizer> findFertilizersForCrops(List<String> cropNames);
