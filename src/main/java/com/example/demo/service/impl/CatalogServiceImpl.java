@@ -32,13 +32,23 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public List<Fertilizer> getFertilizersByCrop(String cropName) {
-        // Implement your logic to fetch fertilizers by crop name
         return fertilizerRepository.findByCropName(cropName);
     }
 
     @Override
     public List<Crop> getSuitableCrops(String soilType) {
-        // Implement your logic to fetch crops suitable for given soil
         return cropRepository.findBySoilType(soilType);
+    }
+
+    @Override
+    public List<Crop> findSuitableCrops(Double ph, Double moisture, String soilType) {
+        // Dummy implementation for now, implement your own logic
+        return cropRepository.findBySoilType(soilType);
+    }
+
+    @Override
+    public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
+        // Dummy implementation for now, implement your own logic
+        return fertilizerRepository.findAll(); // Return all fertilizers temporarily
     }
 }
