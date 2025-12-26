@@ -67,4 +67,3 @@ public class Farm {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
-}
