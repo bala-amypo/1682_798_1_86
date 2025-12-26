@@ -1,36 +1,3 @@
-// package com.example.demo.security;
-
-// import jakarta.servlet.FilterChain;
-// import jakarta.servlet.ServletException;
-// import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpServletResponse;
-// import org.springframework.stereotype.Component;
-// import org.springframework.web.filter.OncePerRequestFilter;
-
-// import java.io.IOException;
-
-// @Component   // ✅ THIS IS THE KEY
-// public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-//     @Override
-//     protected void doFilterInternal(
-//             HttpServletRequest request,
-//             HttpServletResponse response,
-//             FilterChain filterChain
-//     ) throws ServletException, IOException {
-
-//         // Allow auth endpoints
-//         String path = request.getServletPath();
-//         if (path.startsWith("/api/auth")) {
-//             filterChain.doFilter(request, response);
-//             return;
-//         }
-
-//         // JWT logic will come later
-//         filterChain.doFilter(request, response);
-//     }
-// }
-
 package com.example.demo.security;
 
 import io.jsonwebtoken.Claims;
@@ -69,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Allow auth APIs without token
+        // Allow auth endpoints without token
         String path = request.getServletPath();
         if (path.startsWith("/api/auth")) {
             filterChain.doFilter(request, response);
@@ -79,19 +46,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-
             String token = authHeader.substring(7);
 
-            // ✅ validateToken RETURNS Claims (not boolean)
             Claims claims = jwtTokenProvider.validateToken(token);
 
             if (claims != null) {
-
-                // ✅ subject = email/username
                 String email = claims.getSubject();
-
-                UserDetails userDetails =
-                        userDetailsService.loadUserByUsername(email);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
@@ -104,8 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
