@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/suggestions")
 public class SuggestionController {
+    
     private final SuggestionService suggestionService;
     
     public SuggestionController(SuggestionService suggestionService) {
