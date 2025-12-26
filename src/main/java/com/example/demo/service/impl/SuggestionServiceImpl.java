@@ -1,57 +1,57 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
-import com.example.demo.dto.SuggestionRequest;
-import com.example.demo.dto.SuggestionResponse;
+import com.example.demo.entity.Crop;
 import com.example.demo.entity.Farm;
+import com.example.demo.entity.Fertilizer;
 import com.example.demo.entity.Suggestion;
-import com.example.demo.repository.FarmRepository;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.SuggestionRepository;
-import com.example.demo.service.SuggestionService;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Service  // <- Make sure this annotation is present
+@Service
 public class SuggestionServiceImpl implements SuggestionService {
-
+    private final FarmService farmService;
+    private final CatalogService catalogService;
     private final SuggestionRepository suggestionRepository;
-    private final FarmRepository farmRepository;
-
-    public SuggestionServiceImpl(SuggestionRepository suggestionRepository, FarmRepository farmRepository) {
+    
+    public SuggestionServiceImpl(FarmService farmService, CatalogService catalogService, 
+                               SuggestionRepository suggestionRepository) {
+        this.farmService = farmService;
+        this.catalogService = catalogService;
         this.suggestionRepository = suggestionRepository;
-        this.farmRepository = farmRepository;
     }
-
+    
     @Override
-    public SuggestionResponse generateSuggestion(Long farmId, SuggestionRequest request) {
-        Farm farm = farmRepository.findById(farmId).orElseThrow(() ->
-            new RuntimeException("Farm not found with id " + farmId));
-
-        Suggestion suggestion = new Suggestion();
-        suggestion.setFarm(farm);
-        suggestion.setSuggestedCrops(request.getSuggestedCrops());
-        suggestion.setSuggestedFertilizers(request.getSuggestedFertilizers());
-
-        Suggestion saved = suggestionRepository.save(suggestion);
-
-        return new SuggestionResponse(
-            saved.getId(),
-            saved.getFarm().getId(),
-            saved.getSuggestedCrops(),
-            saved.getSuggestedFertilizers(),
-            saved.getCreatedAt()
-        );
+    public Suggestion generateSuggestion(Long farmId) {
+        Farm farm = farmService.getFarmById(farmId);
+        
+        List<Crop> suitableCrops = catalogService.findSuitableCrops(
+            farm.getSoilPH(), farm.getWaterLevel(), farm.getSeason());
+        
+        List<String> cropNames = suitableCrops.stream()
+            .map(Crop::getName)
+            .collect(Collectors.toList());
+        
+        List<Fertilizer> suitableFertilizers = catalogService.findFertilizersForCrops(cropNames);
+        
+        String suggestedCrops = cropNames.isEmpty() ? "No suitable crops" : String.join(",", cropNames);
+        String suggestedFertilizers = suitableFertilizers.isEmpty() ? "No suitable fertilizers" : 
+            suitableFertilizers.stream().map(Fertilizer::getName).collect(Collectors.joining(","));
+        
+        Suggestion suggestion = Suggestion.builder()
+            .farm(farm)
+            .suggestedCrops(suggestedCrops)
+            .suggestedFertilizers(suggestedFertilizers)
+            .build();
+        
+        return suggestionRepository.save(suggestion);
     }
-
+    
     @Override
-    public SuggestionResponse getSuggestion(Long id) {
-        Suggestion suggestion = suggestionRepository.findById(id).orElseThrow(() ->
-            new RuntimeException("Suggestion not found with id " + id));
-
-        return new SuggestionResponse(
-            suggestion.getId(),
-            suggestion.getFarm().getId(),
-            suggestion.getSuggestedCrops(),
-            suggestion.getSuggestedFertilizers(),
-            suggestion.getCreatedAt()
-        );
+    public Suggestion getSuggestion(Long id) {
+        return suggestionRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
     }
 }
