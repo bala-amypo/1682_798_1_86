@@ -1,25 +1,31 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "crops")
 public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    private int suitablePHMin;
-    private int suitablePHMax;
-    private int requiredWater;
-    private String season;
+    private String soilType;  // This must match the repository method
 
-    // 🔹 getters and setters
+    // Constructors
+    public Crop() {
+    }
 
+    public Crop(String name, String soilType) {
+        this.name = name;
+        this.soilType = soilType;
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -36,35 +42,11 @@ public class Crop {
         this.name = name;
     }
 
-    public int getSuitablePHMin() {
-        return suitablePHMin;
+    public String getSoilType() {
+        return soilType;
     }
 
-    public void setSuitablePHMin(int suitablePHMin) {
-        this.suitablePHMin = suitablePHMin;
-    }
-
-    public int getSuitablePHMax() {
-        return suitablePHMax;
-    }
-
-    public void setSuitablePHMax(int suitablePHMax) {
-        this.suitablePHMax = suitablePHMax;
-    }
-
-    public int getRequiredWater() {
-        return requiredWater;
-    }
-
-    public void setRequiredWater(int requiredWater) {
-        this.requiredWater = requiredWater;
-    }
-
-    public String getSeason() {
-        return season;
-    }
-
-    public void setSeason(String season) {
-        this.season = season;
+    public void setSoilType(String soilType) {
+        this.soilType = soilType;
     }
 }

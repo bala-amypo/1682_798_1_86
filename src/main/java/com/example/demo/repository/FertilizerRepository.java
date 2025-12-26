@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> {
 
-    List<Fertilizer> findByCropName(String cropName); // Used in CatalogServiceImpl
+    // Required by CatalogServiceImpl
+    List<Fertilizer> findByCropName(String cropName);
 }
