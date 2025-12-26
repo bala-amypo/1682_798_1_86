@@ -3,12 +3,16 @@ package com.example.demo.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    // Fixed secret for tests & consistency
+    private final String secret = "MySuperSecretKeyForJwtMySuperSecretKeyForJwt"; // min 32 bytes
+    private final Key key = Keys.hmacShaKeyFor(secret.getBytes());
     private final long validityInMilliseconds = 3600000; // 1 hour
 
     public String createToken(Long userId, String email, String role) {
