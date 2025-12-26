@@ -10,4 +10,7 @@ public interface CatalogService {
     List<Crop> findSuitableCrops(Double soilPH, Double waterAvailability, String season);
 
     List<Fertilizer> findFertilizersForCrops(List<String> cropNames);
+
+    // Add this method
+    Crop saveCrop(Crop crop);
 }

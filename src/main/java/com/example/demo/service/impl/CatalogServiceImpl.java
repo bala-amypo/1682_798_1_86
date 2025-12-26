@@ -29,4 +29,9 @@ public class CatalogServiceImpl implements CatalogService {
     public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
         return fertilizerRepository.findFertilizersForCrops(cropNames);
     }
+
+    @Override
+    public Crop saveCrop(Crop crop) {
+        return cropRepository.save(crop);
+    }
 }
