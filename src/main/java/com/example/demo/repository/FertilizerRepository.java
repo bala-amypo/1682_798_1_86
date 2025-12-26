@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> {
 
-    // Required by CatalogServiceImpl
+    // Must match entity field exactly
     List<Fertilizer> findByCropName(String cropName);
+
 }
