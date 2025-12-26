@@ -1,32 +1,22 @@
 package com.example.demo.entity;
 
+import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "fertilizers")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Fertilizer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private String name;
-
-    private String cropName; // Must match repository method
-
-    public Fertilizer() {}
-
-    public Fertilizer(String name, String cropName) {
-        this.name = name;
-        this.cropName = cropName;
-    }
-
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getCropName() { return cropName; }
-    public void setCropName(String cropName) { this.cropName = cropName; }
+    
+    private String npkRatio;
+    
+    private String recommendedForCrops;
 }
