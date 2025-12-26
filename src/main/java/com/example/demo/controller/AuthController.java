@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.User;
+
 import com.example.demo.security.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,20 +27,7 @@ public class AuthController {
     // ---------------- REGISTER ----------------
     @PostMapping("/register")
     public ResponseEntity<String> register(
-            @RequestBody(
-                    description = "User registration details",
-                    required = true,
-                    content = @Content(
-                            schema = @Schema(
-                                    example = "{\n" +
-                                            "  \"email\": \"string\",\n" +
-                                            "  \"username\": \"string\",\n" +
-                                            "  \"password\": \"string\"\n" +
-                                            "}"
-                            )
-                    )
-            )
-            @org.springframework.web.bind.annotation.RequestBody Map<String, String> request
+            @RequestBody User us
     ) {
         String email = request.get("email");
         String username = request.get("username");
