@@ -7,17 +7,20 @@ import com.example.demo.entity.Suggestion;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.SuggestionRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class SuggestionServiceImpl implements SuggestionService {
+    
     private final FarmService farmService;
     private final CatalogService catalogService;
     private final SuggestionRepository suggestionRepository;
     
-    public SuggestionServiceImpl(FarmService farmService, CatalogService catalogService, 
-                               SuggestionRepository suggestionRepository) {
+    public SuggestionServiceImpl(FarmService farmService, 
+                                 CatalogService catalogService,
+                                 SuggestionRepository suggestionRepository) {
         this.farmService = farmService;
         this.catalogService = catalogService;
         this.suggestionRepository = suggestionRepository;
@@ -28,23 +31,27 @@ public class SuggestionServiceImpl implements SuggestionService {
         Farm farm = farmService.getFarmById(farmId);
         
         List<Crop> suitableCrops = catalogService.findSuitableCrops(
-            farm.getSoilPH(), farm.getWaterLevel(), farm.getSeason());
+            farm.getSoilPH(), 
+            farm.getWaterLevel(), 
+            farm.getSeason()
+        );
         
         List<String> cropNames = suitableCrops.stream()
-            .map(Crop::getName)
-            .collect(Collectors.toList());
+                .map(Crop::getName)
+                .collect(Collectors.toList());
         
-        List<Fertilizer> suitableFertilizers = catalogService.findFertilizersForCrops(cropNames);
+        List<Fertilizer> fertilizers = catalogService.findFertilizersForCrops(cropNames);
         
-        String suggestedCrops = cropNames.isEmpty() ? "No suitable crops" : String.join(",", cropNames);
-        String suggestedFertilizers = suitableFertilizers.isEmpty() ? "No suitable fertilizers" : 
-            suitableFertilizers.stream().map(Fertilizer::getName).collect(Collectors.joining(","));
+        String suggestedCrops = cropNames.isEmpty() ? "" : String.join(",", cropNames);
+        String suggestedFertilizers = fertilizers.stream()
+                .map(Fertilizer::getName)
+                .collect(Collectors.joining(","));
         
         Suggestion suggestion = Suggestion.builder()
-            .farm(farm)
-            .suggestedCrops(suggestedCrops)
-            .suggestedFertilizers(suggestedFertilizers)
-            .build();
+                .farm(farm)
+                .suggestedCrops(suggestedCrops)
+                .suggestedFertilizers(suggestedFertilizers)
+                .build();
         
         return suggestionRepository.save(suggestion);
     }
@@ -52,6 +59,6 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Override
     public Suggestion getSuggestion(Long id) {
         return suggestionRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
     }
 }

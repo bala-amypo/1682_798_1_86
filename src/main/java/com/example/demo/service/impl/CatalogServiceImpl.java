@@ -1,50 +1,61 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
 import com.example.demo.entity.Crop;
 import com.example.demo.entity.Fertilizer;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.CropRepository;
 import com.example.demo.repository.FertilizerRepository;
-import com.example.demo.service.CatalogService;
+import com.example.demo.util.ValidationUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
-
+    
     private final CropRepository cropRepository;
     private final FertilizerRepository fertilizerRepository;
-
+    
     public CatalogServiceImpl(CropRepository cropRepository, FertilizerRepository fertilizerRepository) {
         this.cropRepository = cropRepository;
         this.fertilizerRepository = fertilizerRepository;
     }
-
+    
     @Override
-    public List<Crop> getAllCrops() {
-        return cropRepository.findAll();
+    public Crop addCrop(Crop crop) {
+        if (crop.getSuitablePHMin() > crop.getSuitablePHMax()) {
+            throw new BadRequestException("PH min cannot be greater than PH max");
+        }
+        if (!ValidationUtil.validSeason(crop.getSeason())) {
+            throw new BadRequestException("Invalid season. Must be Kharif, Rabi, or Zaid");
+        }
+        return cropRepository.save(crop);
     }
-
+    
     @Override
-    public List<Crop> findSuitableCrops(Double nitrogen, Double phosphorus, String soilType) {
-        return cropRepository.findBySoilTypeAndNitrogenLessThanEqualAndPhosphorusLessThanEqual(
-                soilType, nitrogen, phosphorus
-        );
+    public Fertilizer addFertilizer(Fertilizer fertilizer) {
+        if (!fertilizer.getNpkRatio().matches("\\d+-\\d+-\\d+")) {
+            throw new BadRequestException("NPK ratio must be in format N-P-K (e.g., 10-10-10)");
+        }
+        return fertilizerRepository.save(fertilizer);
     }
-
+    
     @Override
-    public List<Fertilizer> getAllFertilizers() {
-        return fertilizerRepository.findAll();
+    public List<Crop> findSuitableCrops(Double ph, Double waterLevel, String season) {
+        return cropRepository.findSuitableCrops(ph, season).stream()
+                .filter(crop -> crop.getRequiredWater() <= waterLevel)
+                .collect(Collectors.toList());
     }
-
+    
     @Override
     public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
-        return fertilizerRepository.findByCropNameIn(cropNames);
-    }
-
-    // Implement missing method
-    @Override
-    public List<Fertilizer> getFertilizersByCrop(String cropName) {
-        return fertilizerRepository.findByCropName(cropName);
+        if (cropNames == null || cropNames.isEmpty()) {
+            return List.of();
+        }
+        return cropNames.stream()
+                .flatMap(name -> fertilizerRepository.findByCropName(name).stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

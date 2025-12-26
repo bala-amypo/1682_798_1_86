@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+    
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     
@@ -27,11 +28,13 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found"));
     }
     
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found"));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("User not found"));
     }
 }
