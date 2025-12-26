@@ -20,13 +20,11 @@ public class CatalogServiceImpl implements CatalogService {
         this.fertilizerRepository = fertilizerRepository;
     }
 
-    // Get all crops
     @Override
     public List<Crop> getAllCrops() {
         return cropRepository.findAll();
     }
 
-    // Find suitable crops based on soil type and nutrient levels
     @Override
     public List<Crop> findSuitableCrops(Double nitrogen, Double phosphorus, String soilType) {
         return cropRepository.findBySoilTypeAndNitrogenLessThanEqualAndPhosphorusLessThanEqual(
@@ -34,15 +32,19 @@ public class CatalogServiceImpl implements CatalogService {
         );
     }
 
-    // Get all fertilizers
     @Override
     public List<Fertilizer> getAllFertilizers() {
         return fertilizerRepository.findAll();
     }
 
-    // Find fertilizers for given crop names
     @Override
     public List<Fertilizer> findFertilizersForCrops(List<String> cropNames) {
         return fertilizerRepository.findByCropNameIn(cropNames);
+    }
+
+    // Implement missing method
+    @Override
+    public List<Fertilizer> getFertilizersByCrop(String cropName) {
+        return fertilizerRepository.findByCropName(cropName);
     }
 }
