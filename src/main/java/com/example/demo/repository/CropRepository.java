@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface CropRepository extends JpaRepository<Crop, Long> {
 
-    List<Crop> findBySoilType(String soilType); // Required by CatalogServiceImpl
+    List<Crop> findBySoilType(String soilType); // Used in CatalogServiceImpl
 }
