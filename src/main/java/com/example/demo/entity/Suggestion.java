@@ -49,8 +49,7 @@ this; }
 this.suggestedCrops = c; return this; } 
         public SuggestionBuilder suggestedFertilizers(String f) { 
 this.suggestedFertilizers = f; return this; } 
-public SuggestionBuilder createdAt(LocalDateTime ct) { this.createdAt 
-= ct; return this; } 
+public SuggestionBuilder createdAt(LocalDateTime ct) { this.createdAt = ct; return this; } 
 public Suggestion build() { return new Suggestion(id, farm, 
 suggestedCrops, suggestedFertilizers, createdAt); } 
 } 
