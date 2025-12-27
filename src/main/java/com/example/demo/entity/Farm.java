@@ -1,40 +1,19 @@
-package com.example.demo.entity;
-
-import lombok.*;
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "farms")
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Farm {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-
-    @Column(nullable = false)
-    private Double soilPH;
-
-    @Column(nullable = false)
-    private Double waterLevel;
-
-    @Column(nullable = false)
+package com.example.demo.entity; 
+ 
+import jakarta.persistence.*; 
+ 
+@Entity 
+@Table(name = "farms") 
+public class Farm { 
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    private Long id; 
+ 
+    @ManyToOne 
+    @JoinColumn(name = "user_id") 
+    private User owner; 
+ 
+    private String name; 
+    private Double soilPH; 
+    private Double waterLevel; 
     private String season;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
-
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-}
