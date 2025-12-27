@@ -19,8 +19,7 @@ public class Suggestion {
     public Suggestion() {} 
      
     // Updated constructor to match the builder 
-    public Suggestion(Long id, Farm farm, String suggestedCrops, String 
-suggestedFertilizers, LocalDateTime createdAt) { 
+    public Suggestion(Long id, Farm farm, String suggestedCrops, String suggestedFertilizers, LocalDateTime createdAt) { 
         this.id = id; 
         this.farm = farm; 
         this.suggestedCrops = suggestedCrops; 
@@ -37,11 +36,12 @@ suggestedFertilizers, LocalDateTime createdAt) {
     public String getSuggestedFertilizers() { return suggestedFertilizers; } 
     public LocalDateTime getCreatedAt() { return createdAt; } 
  
-    public static SuggestionBuilder builder() { return new 
-SuggestionBuilder(); } 
+    public static SuggestionBuilder builder() { 
+        return new SuggestionBuilder(); 
+        } 
     public static class SuggestionBuilder { 
         private Long id; private Farm farm; private String suggestedCrops; 
-private String suggestedFertilizers; private LocalDateTime createdAt; 
+    private String suggestedFertilizers; private LocalDateTime createdAt; 
         public SuggestionBuilder id(Long id) { this.id = id; return this; } 
         public SuggestionBuilder farm(Farm farm) { this.farm = farm; return 
 this; } 

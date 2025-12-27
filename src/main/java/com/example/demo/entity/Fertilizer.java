@@ -12,8 +12,7 @@ public class Fertilizer {
  
     public Fertilizer() {} 
  
-    public Fertilizer(Long id, String name, String npkRatio, String 
-recommendedForCrops) { 
+    public Fertilizer(Long id, String name, String npkRatio, String recommendedForCrops) { 
         this.id = id; 
         this.name = name; 
         this.npkRatio = npkRatio; 
@@ -38,13 +37,12 @@ recommendedForCrops) {
         private String recommendedForCrops; 
  
         public FertilizerBuilder id(Long id) { this.id = id; return this; } 
-        public FertilizerBuilder name(String name) { this.name = name; return 
-this; } 
-        public FertilizerBuilder npkRatio(String npkRatio) { this.npkRatio = 
-npkRatio; return this; } 
-        public FertilizerBuilder recommendedForCrops(String 
-recommendedForCrops) { this.recommendedForCrops = recommendedForCrops; return 
-this; } 
+        public FertilizerBuilder name(String name) { 
+            this.name = name; 
+            return this; 
+            } 
+        public FertilizerBuilder npkRatio(String npkRatio) { this.npkRatio = npkRatio; return this; } 
+        public FertilizerBuilder recommendedForCrops(String recommendedForCrops) { this.recommendedForCrops = recommendedForCrops; return this; } 
          
         public Fertilizer build() { 
             return new Fertilizer(id, name, npkRatio, recommendedForCrops); 
