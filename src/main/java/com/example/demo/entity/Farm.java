@@ -17,3 +17,4 @@ public class Farm {
     private Double soilPH; 
     private Double waterLevel; 
     private String season;
+}

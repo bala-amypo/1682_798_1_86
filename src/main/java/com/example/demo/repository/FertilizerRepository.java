@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List; 
 public interface FertilizerRepository extends JpaRepository<Fertilizer, Long> 
 { 
-    @Query("SELECT f FROM Fertilizer f WHERE f.recommendedForCrops LIKE 
-%:cropName%") 
+    @Query("SELECT f FROM Fertilizer f WHERE f.recommendedForCrops LIKE %:cropName%") 
     List<Fertilizer> findByCropName(String cropName); 
 } 
