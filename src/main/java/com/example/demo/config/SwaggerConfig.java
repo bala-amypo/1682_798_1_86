@@ -1,33 +1,38 @@
-package com.example.demo.config; 
-import io.swagger.v3.oas.models.OpenAPI; 
-import io.swagger.v3.oas.models.servers.Server; 
-import org.springframework.context.annotation.Bean; 
-import org.springframework.context.annotation.Configuration; 
-import java.util.List; 
- 
-@Configuration 
-public class SwaggerConfig { 
- 
-//     @Bean 
-//     public OpenAPI customOpenAPI() { 
-//         return new OpenAPI() 
-//                 // You need to change the port as per your server 
-//                 .servers(List.of( 
-//                         new Server().url("https://9079.pro604cr.amypo.ai") 
-//                 )); 
-                 
-//         } 
- 
-@Bean 
-    public OpenAPI customOpenAPI() { 
-        return new OpenAPI() 
-                .servers(List.of( 
-                        new Server().url("https://9419.pro604cr.amypo.ai/") 
-                )); 
-    } 
- 
-    // For the test code 
-    public OpenAPI api() { 
-        return customOpenAPI(); 
-    } 
-} 
+package com.example.demo.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+
+        SecurityScheme bearerAuth = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
+
+        return new OpenAPI()
+                .servers(List.of(
+                        new Server().url("https://9079.pro604cr.amypo.ai")
+                ))
+                .components(new Components()
+                        .addSecuritySchemes("bearerAuth", bearerAuth))
+                .addSecurityItem(new SecurityRequirement()
+                        .addList("bearerAuth"));
+    }
+
+    // 🔥 THIS IS REQUIRED FOR TEST CASE t56
+    public OpenAPI api() {
+        return customOpenAPI();
+    }
+}
