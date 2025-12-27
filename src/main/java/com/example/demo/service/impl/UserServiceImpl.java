@@ -28,13 +28,19 @@ user.setPassword(passwordEncoder.encode(user.getPassword()));
     } 
  
     @Override public User findByEmail(String email) { return 
-userRepository.findByEmail(email).orElse(null); } 
+userRepository.findByEmail(email).orElse(null); 
+} 
     @Override public User findById(Long id) { return 
 userRepository.findById(id).orElseThrow(() -> new BadRequestException("User missing")); } 
-    @Override public User create(User user) { return register(user); } 
-    @Override public User getById(Long id) { return findById(id); } 
-    @Override public List<User> getAll() { return userRepository.findAll(); } 
+    @Override public User create(User user) { return register(user); 
+    } 
+    @Override public User getById(Long id) { return findById(id); 
+    } 
+    @Override public List<User> getAll() { return userRepository.findAll(); 
+    } 
     @Override public User update(Long id, User user) { user.setId(id); return 
-userRepository.save(user); } 
-    @Override public void delete(Long id) { userRepository.deleteById(id); } 
+userRepository.save(user); 
+} 
+    @Override public void delete(Long id) { userRepository.deleteById(id); 
+    } 
 }
