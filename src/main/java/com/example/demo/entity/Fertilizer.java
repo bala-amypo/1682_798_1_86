@@ -1,3 +1,5 @@
+package com.example.demo.entity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +23,10 @@ public class Fertilizer {
     }
 
     // All-args constructor
-    public Fertilizer(Long id, String name, String npkRatio, String recommendedForCrops) {
+    public Fertilizer(Long id,
+                      String name,
+                      String npkRatio,
+                      String recommendedForCrops) {
         this.id = id;
         this.name = name;
         this.npkRatio = npkRatio;
@@ -45,7 +50,7 @@ public class Fertilizer {
         return recommendedForCrops;
     }
 
-    // Manual Builder for Test Cases
+    // Manual Builder
     public static FertilizerBuilder builder() {
         return new FertilizerBuilder();
     }
@@ -78,7 +83,12 @@ public class Fertilizer {
         }
 
         public Fertilizer build() {
-            return new Fertilizer(id, name, npkRatio, recommendedForCrops);
+            return new Fertilizer(
+                    id,
+                    name,
+                    npkRatio,
+                    recommendedForCrops
+            );
         }
     }
 }
