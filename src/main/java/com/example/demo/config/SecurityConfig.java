@@ -1,24 +1,40 @@
 package com.example.demo.config; 
-import io.swagger.v3.oas.models.OpenAPI; 
-import io.swagger.v3.oas.models.servers.Server; 
+import com.example.demo.security.JwtAuthenticationFilter; 
+import com.example.demo.security.JwtTokenProvider; 
 import org.springframework.context.annotation.Bean; 
 import org.springframework.context.annotation.Configuration; 
-import java.util.List; 
+import org.springframework.security.config.annotation.web.builders.HttpSecurity; 
+import org.springframework.security.web.SecurityFilterChain; 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; 
+import org.springframework.security.crypto.password.PasswordEncoder; 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; 
  
 @Configuration 
-public class SwaggerConfig { 
+public class SecurityConfig { 
  
-@Bean 
-    public OpenAPI customOpenAPI() { 
-        return new OpenAPI() 
-                .servers(List.of( 
-                        new Server().url("https://9419.pro604cr.amypo.ai/") 
-                )); 
+    private final JwtTokenProvider jwtTokenProvider; 
+ 
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) { 
+        this.jwtTokenProvider = jwtTokenProvider; 
     } 
  
-    // For the test code 
-    public OpenAPI api() { 
-        return customOpenAPI(); 
+    @Bean 
+    public PasswordEncoder passwordEncoder() { 
+        return new BCryptPasswordEncoder(); 
+    } 
+ 
+    @Bean 
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { 
+ 
+        http.csrf().disable() 
+            .authorizeHttpRequests(auth -> auth 
+                .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() 
+                .anyRequest().authenticated() 
+            ) 
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), 
+                    UsernamePasswordAuthenticationFilter.class) 
+            .sessionManagement(session -> session.disable()); 
+ 
+        return http.build(); 
     } 
 } 
- 
