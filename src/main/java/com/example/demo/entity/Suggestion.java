@@ -43,14 +43,12 @@ public class Suggestion {
         private Long id; private Farm farm; private String suggestedCrops; 
     private String suggestedFertilizers; private LocalDateTime createdAt; 
         public SuggestionBuilder id(Long id) { this.id = id; return this; } 
-        public SuggestionBuilder farm(Farm farm) { this.farm = farm; return 
-this; } 
+        public SuggestionBuilder farm(Farm farm) { this.farm = farm; return this; } 
         public SuggestionBuilder suggestedCrops(String c) { 
 this.suggestedCrops = c; return this; } 
         public SuggestionBuilder suggestedFertilizers(String f) { 
 this.suggestedFertilizers = f; return this; } 
 public SuggestionBuilder createdAt(LocalDateTime ct) { this.createdAt = ct; return this; } 
-public Suggestion build() { return new Suggestion(id, farm, 
-suggestedCrops, suggestedFertilizers, createdAt); } 
+public Suggestion build() { return new Suggestion(id, farm, suggestedCrops, suggestedFertilizers, createdAt); } 
 } 
 } 
