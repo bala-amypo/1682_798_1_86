@@ -4,9 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException; 
 import jakarta.servlet.http.HttpServletRequest; 
 import jakarta.servlet.http.HttpServletResponse; 
-import 
-org.springframework.security.authentication.UsernamePasswordAuthenticationToke
-n; 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; 
 import org.springframework.security.core.authority.SimpleGrantedAuthority; 
 import org.springframework.security.core.context.SecurityContextHolder; 
 import org.springframework.stereotype.Component; 
@@ -29,11 +27,9 @@ HttpServletResponse response, FilterChain filterChain)
             String token = header.substring(7); 
             if (tokenProvider.validateToken(token)) { 
                 String role = tokenProvider.getRole(token); 
-                UsernamePasswordAuthenticationToken auth = new 
-UsernamePasswordAuthenticationToken( 
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken( 
                         tokenProvider.getUserId(token), null, 
-                        Collections.singletonList(new 
-SimpleGrantedAuthority("ROLE_" + role))); 
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))); 
                 SecurityContextHolder.getContext().setAuthentication(auth); 
             } 
         } 

@@ -55,10 +55,8 @@ fertRepo) {
     } 
  
     @Override 
-    public List<Crop> findSuitableCrops(Double ph, Double waterLevel, String 
-season) { 
-        // Based on AllFunctionalTests requirements, repo call uses ph and 
-season 
+    public List<Crop> findSuitableCrops(Double ph, Double waterLevel, String season) { 
+        // Based on AllFunctionalTests requirements, repo call uses ph and season 
         return cropRepo.findSuitableCrops(ph, season); 
     } 
  

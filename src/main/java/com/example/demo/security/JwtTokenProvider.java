@@ -39,9 +39,7 @@ Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject
     } 
  
     public Long getUserId(String token) { 
-        Object id = 
-Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("userI
-d"); 
+        Object id = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("userId"); 
         return Long.valueOf(id.toString()); 
     } 
  
