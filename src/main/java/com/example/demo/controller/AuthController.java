@@ -17,8 +17,7 @@ public class AuthController {
 jwtTokenProvider) { 
         this.userService = userService; 
         this.jwtTokenProvider = jwtTokenProvider; 
-        this.passwordEncoder = new 
-org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder(); 
+        this.passwordEncoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder(); 
     } 
  
     @PostMapping("/register") 
