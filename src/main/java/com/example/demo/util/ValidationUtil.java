@@ -1,13 +1,9 @@
-package com.example.demo.util;
-
-import java.util.Arrays;
-import java.util.List;
-
-public class ValidationUtil {
-    
-    private static final List<String> VALID_SEASONS = Arrays.asList("Kharif", "Rabi", "Zaid");
-    
-    public static boolean validSeason(String season) {
-        return VALID_SEASONS.contains(season);
-    }
-}
+package com.example.demo.util; 
+public class ValidationUtil { 
+    public static boolean validSeason(String season) { 
+        if (season == null) return false; 
+        return season.equalsIgnoreCase("Kharif") ||  
+               season.equalsIgnoreCase("Rabi") ||  
+               season.equalsIgnoreCase("Summer"); 
+    } 
+} 
