@@ -17,25 +17,23 @@ public class SecurityConfig {
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) { 
         this.jwtTokenProvider = jwtTokenProvider; 
     } 
- 
-    @Bean 
-    public PasswordEncoder passwordEncoder() { 
-        return new BCryptPasswordEncoder(); 
-    } 
- 
-    @Bean 
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { 
- 
-        http.csrf().disable() 
-            .authorizeHttpRequests(auth -> auth 
-                .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() 
-                .anyRequest().authenticated() 
-            ) 
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), 
-                    UsernamePasswordAuthenticationFilter.class) 
-            .sessionManagement(session -> session.disable()); 
- 
-        return http.build(); 
-    } 
-} 
- 
+ @Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(
+                "/auth/**",
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/catalog/**"   // 👈 ADD THIS
+            ).permitAll()
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}
