@@ -24,8 +24,7 @@ org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
     @PostMapping("/register") 
     public ResponseEntity<?> register(@RequestBody RegisterRequest rr) { 
         User u = 
-userService.register(User.builder().name(rr.getName()).email(rr.getEmail()).pa
-ssword(rr.getPassword()).build()); 
+userService.register(User.builder().name(rr.getName()).email(rr.getEmail()).password(rr.getPassword()).build()); 
         return ResponseEntity.ok(u); 
     } 
  
