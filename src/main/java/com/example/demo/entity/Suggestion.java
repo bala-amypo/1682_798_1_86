@@ -18,7 +18,7 @@ public class Suggestion {
     private Long id; 
  
     @ManyToOne 
-    @JoinColumn(name = "farm_id") 
+    @JoinColumn(name = "farm_id",nullable=false) 
     private Farm farm; 
  
     private String suggestedCrops; 
