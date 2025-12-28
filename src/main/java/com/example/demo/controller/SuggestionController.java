@@ -16,7 +16,7 @@ public class SuggestionController {
     } 
  
     @PostMapping("/{farmId}") 
-    public ResponseEntity<Suggestion> generate(@PathVariable Long farmId, @RequestBody SuggestionRequest request) { 
+    public ResponseEntity<Suggestion> generate(@PathVariable Long farmId) { 
         return ResponseEntity.ok( 
                 suggestionService.generateSuggestion(farmId) 
         ); 

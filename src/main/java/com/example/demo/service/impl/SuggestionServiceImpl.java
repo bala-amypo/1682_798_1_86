@@ -54,7 +54,7 @@ public class SuggestionServiceImpl implements SuggestionService {
                 .collect(Collectors.joining(",")); 
  
         Suggestion suggestion = Suggestion.builder() 
-                .setFarm(farm) 
+                .farm(farm) 
                 .suggestedCrops(cropsCsv) 
                 .suggestedFertilizers(fertCsv) 
                 .build(); 
